@@ -136,11 +136,11 @@ align-items: center;
 /* Mostrar el texto al hacer hover */
 .procesos a:hover .accion-titulo {
     opacity: 1;
-    max-width: 200px; /* Ajusta el ancho máximo según necesites */
+    max-width: 120px; /* Ajusta el ancho máximo según necesites */
     padding-left: 10px;
 }
 
-.procesos a:hover,
+/* .procesos a:hover,
 .procesos a:focus {
     flex-grow: 10;
     outline: none;
@@ -156,7 +156,7 @@ align-items: center;
 
 .procesos a:active {
     transform: translateY(var(--border-size));
-}
+} */
 
 
 /* }

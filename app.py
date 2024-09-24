@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 # Importar la función para inicializar la base de datos
 from database import init_db
-from models import insert_material
+
 
 
 # Inicializar la base de datos si no existe

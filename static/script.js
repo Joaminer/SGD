@@ -136,10 +136,9 @@ $(document).ready(function() {
         } 
     });
     
-    
+    //Editar elimina y sobreescribe
     $(document).on('click', '.edit-item', function() {
         let item = $(this).data('item');
-       
         $('#barcode').val(item.codigo_barras);
         $('#categoria').val(item.categoria);
         $('#modelo').val(item.modelo);
@@ -159,6 +158,7 @@ $(document).ready(function() {
             url: '/api/search',
             method: 'GET',  
             data: { query: query },
+
             success: function(data) {
                 let resultsContainer = $('#search-results');
                 resultsContainer.empty();
