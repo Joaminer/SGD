@@ -68,11 +68,11 @@ body {
 header {
     font-weight: bold !important;
     background: rgba(46, 50, 57, 0.55) !important;
-    border-bottom: 2px solid rgba(36, 38, 45, 0.69) !important;
+    border: 2px solid #96babd2b !important;
     backdrop-filter: blur(22.8077px) !important;
-    padding: 0px; /* Espaciado alrededor del contenido del header */
-
-    border-radius: 0px 0px 20px 20px; /* Bordes redondeados en la parte inferior */
+    padding: 0px;
+    border-radius: 20px;
+    margin: 9px;
 }
 
 header nav {
@@ -81,6 +81,7 @@ header nav {
     justify-content: center;
     align-items: center;
     height: 100% !important;
+    border-radius: 20px;
 }
 
 header nav ul {
@@ -90,7 +91,7 @@ header nav ul {
     align-items: center;
     justify-content: space-between;
     margin: 0;
-    padding:0px 10px;
+    padding: 0px 10px;
 }
 .procesos {
     display: flex;
@@ -233,16 +234,14 @@ header nav ul .couple a {
    
 
 } */
-
 header nav ul .single a {
     font-weight: bold !important;
-    text-decoration: none; /* Eliminar subrayado de los enlaces */
+    text-decoration: none;
     font-weight: 500;
-    font-size: 1rem; /* Tamaño de fuente */
-    color: #96babd !important; /* Color del texto */
-    padding: 12px 20px; /* Espaciado dentro de los enlaces */
-    transition: background-color 0.3s, color 0.3s; /* Transiciones suaves */
-   
+    font-size: 1rem;
+    color: #96babd !important;
+    padding: 6px 10px;
+    transition: background-color 0.3s, color 0.3s;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
