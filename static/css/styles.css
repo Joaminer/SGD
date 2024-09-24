@@ -36,11 +36,12 @@ body {
     background-color: #94AFB0 !important;
     display: flex !important;
     justify-content: center !important ;
+    padding: 10px !important;
 }
 .modal-header .btn-close{
     margin: 0 !important;
 }
-.modal-header h5{
+.modal-header p{
     color:#AC0000;
     font-weight: bold !important;
     width: 100% !important;
