@@ -33,7 +33,7 @@ body {
     backdrop-filter: blur(12.6814px) !important;
 }
 .modal-header{
-    background-color: #94AFB0 !important;
+
     display: flex !important;
     justify-content: center !important ;
     padding: 10px !important;
@@ -42,7 +42,7 @@ body {
     margin: 0 !important;
 }
 .modal-header p{
-    color:#AC0000;
+    color:#94AFB0;
     font-weight: bold !important;
     width: 100% !important;
     justify-content: center !important;
