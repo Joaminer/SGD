@@ -237,16 +237,17 @@ header nav ul .couple a {
 
 } */
 header nav ul .single a {
-    font-weight: bold !important;
+    font-weight: 100 !important;
     text-decoration: none;
-    font-weight: 500;
-    font-size: 1rem;
+    /* font-weight: 500; */
+    font-size: 1.5rem;
     color: #96babd !important;
     padding: 6px 10px;
     transition: background-color 0.3s, color 0.3s;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
+    gap: 10px;
 }
 header nav ul .single:first-child a {
     border-right: 2px solid rgba(36, 38, 45, 0.69);
