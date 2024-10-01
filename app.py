@@ -326,6 +326,8 @@ def get_sections():
     cursor = connection.cursor()
     cursor.execute('SELECT DISTINCT ubicacion_usuario FROM valores_defecto WHERE ubicacion_usuario IS NOT NULL')
     sections = cursor.fetchall()
+    print(sections)
+    print([row[0] for row in sections])
     connection.close()
     return jsonify([row[0] for row in sections])
 

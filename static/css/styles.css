@@ -27,7 +27,7 @@ body {
 
     background: radial-gradient(50% 158.02% at 50% 50%, #3E4A47 0%, #2B3134 100%) !important;
 }
-.modal-content{
+.modal-content,.search-results{
     background: linear-gradient(90deg, rgba(46, 50, 57, 0.405) 3%, rgba(80, 87, 100, 0.235465) 54.5%, rgba(128, 139, 159, 0) 100%) !important;
     filter: drop-shadow(0px 3.53161px 3.53161px rgba(0, 0, 0, 0.25)) !important;
     backdrop-filter: blur(12.6814px) !important;
@@ -316,14 +316,18 @@ header nav ul .single a:hover svg path {
     padding: 10px;
     cursor: pointer;
     color: black !important;
+    display: flex;
+    align-items: center;
 }
 
 .search-result-card p {
-    color: black !important;
+    color: rgb(255, 255, 255) !important;
 }
 
 .search-result-card:hover {
-    background-color: #f1f1f1;
+    background-color: rgba(88, 96, 109, 0.815);
+    border-radius: 20px;
+    
 }
 
 .search-results-container {
@@ -431,3 +435,4 @@ header nav ul .single a:hover svg path {
 .rotate-svg{
     transform: rotate(180deg);
 }
+

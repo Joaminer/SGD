@@ -130,6 +130,9 @@ $(document).ready(function() {
         $('#states').val(item.estado);
         $('#stock_critico').val(item.stock_critico);
         $(this).closest('.confirmed-item').remove()
+          $('#userFormDiv').addClass('d-none');
+         $('#userFormDiv').addClass('animate__fadeInUp');
+         $('#scont').removeClass('d-none');
     });
     $(document).on('click', '.delete-item', function() {
         $(this).closest('.confirmed-item').remove();
@@ -259,6 +262,7 @@ $(document).ready(function() {
             success: function(data) {
                 let sectionsDatalist = $('#seccion');
                 // locationsDatalist.empty();
+                console.log(data);
                 data.forEach(section => {
                     sectionsDatalist.append(`<option value="${section}">${section}</option>`);
                 });
@@ -818,6 +822,11 @@ for (let proceso_id in groupedData) {
 
 
 
+    $('#backToItemsForm').on('click', function() {
+        $('#userFormDiv').addClass('d-none');
+        $('#userFormDiv').addClass('animate__fadeInUp');
+        $('#scont').removeClass('d-none');
+    });
     $('#backToItemsForm').on('click', function() {
         $('#userFormDiv').addClass('d-none');
         $('#userFormDiv').addClass('animate__fadeInUp');
