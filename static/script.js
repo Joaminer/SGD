@@ -15,27 +15,8 @@ $(document).ready(function() {
         `;
         $('#confirmed-items-container').append(itemHtml);
     }
-    let barcodeBuffer = '';
 
-    function processBarcode(barcode) {
-        $('#barcode').val(barcode);
-        $('#barcode').trigger('input'); // Triggers input event to process barcode
-        $('#flush-collapseOne').collapse('hide'); // Close the accordion
-    }
-
-    $(document).on('keydown', function(event) {
-        console.log('Key pressed:', event.key); // Add this line to debug
-        if (event.key.length === 1) { // Handle character   s
-            barcodeBuffer += event.key;
-        } else if (event.key === 'Enter') { // Handle Enter key
-            if (barcodeBuffer) {
-                console.log('Barcode scanned:', barcodeBuffer); // Add this line to debug
-                processBarcode(barcodeBuffer);
-                barcodeBuffer = ''; // Clear buffer
-                event.preventDefault(); // Prevent default Enter behavior
-            }
-        }
-    });
+    
     
     $('#addItem').on('click', function() {
         let modeloInput = $('#modelo');
@@ -467,7 +448,7 @@ $(document).ready(function() {
 
         if (action === 'ingreso') {
             $('#ModalLabel').empty();
-            $('#ModalLabel').append(`<svg height="40px" width="40px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+            $('#ModalLabel').append(`<svg class="rotate-svg" height="40px" width="40px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
 	 viewBox="0 0 512 512" xml:space="preserve">
 <path style="fill:#94afb000;" d="M395.47,296.3H116.531c-36.816,0-57.855-42.009-35.803-71.491L225.983,30.621
 	c14.993-20.043,45.041-20.043,60.034,0l145.254,194.188C453.325,254.291,432.286,296.3,395.47,296.3z"/>
