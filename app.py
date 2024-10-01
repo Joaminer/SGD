@@ -349,7 +349,7 @@ def get_item_by_barcode():
         connection = get_db_connection()
         cursor = connection.cursor()
 
-        # Fetch the item details
+        # Fetch the item detail
         cursor.execute('SELECT * FROM items WHERE codigo_barras = ?', (barcode,))
         item = cursor.fetchone()
         

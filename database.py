@@ -345,7 +345,7 @@ def init_db():
                 VALUES (?)
             ''', unidad)
 
-        # Insertar tipos
+        # Insertar tipo
         for tipo in tipos_data:
             cursor.execute('''
                 INSERT OR IGNORE INTO valores_defecto (tipo) 
