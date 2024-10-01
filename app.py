@@ -296,7 +296,7 @@ def get_category_quantity():
 def get_types():
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT DISTINCT tipo FROM categorias')
+    cursor.execute('SELECT DISTINCT tipo FROM valores_defecto WHERE tipo IS NOT NULL')
     types = cursor.fetchall()
     connection.close()
     return jsonify([row[0] for row in types])
@@ -305,7 +305,7 @@ def get_types():
 def get_units():
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT DISTINCT unidad FROM categorias')
+    cursor.execute('SELECT DISTINCT unidad FROM valores_defecto WHERE unidad IS NOT NULL')
     units = cursor.fetchall()
     connection.close()
     return jsonify([row[0] for row in units])
@@ -315,7 +315,7 @@ def get_units():
 def get_locations():
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT DISTINCT ubicacion FROM items')
+    cursor.execute('SELECT DISTINCT ubicacion FROM valores_defecto WHERE ubicacion IS NOT NULL')
     locations = cursor.fetchall()
     connection.close()
     return jsonify([row[0] for row in locations])
@@ -324,7 +324,7 @@ def get_locations():
 def get_sections():
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT DISTINCT seccion FROM usuarios')
+    cursor.execute('SELECT DISTINCT ubicacion_usuario FROM valores_defecto WHERE ubicacion_usuario IS NOT NULL')
     sections = cursor.fetchall()
     connection.close()
     return jsonify([row[0] for row in sections])
@@ -333,7 +333,7 @@ def get_sections():
 def get_states():
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT DISTINCT estado FROM items')
+    cursor.execute('SELECT DISTINCT estado FROM valores_defecto WHERE estado IS NOT NULL')
     states = cursor.fetchall()
     connection.close()
     return jsonify([row[0] for row in states])
