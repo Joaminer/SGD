@@ -467,6 +467,7 @@ $(document).ready(function() {
 	C425.534,243.165,426.551,254.56,421.509,264.629z"/>
 </svg> Ingresar Item`);
             actionType = 'ingreso';
+            $('#content-modal').removeClass('border-retirar').addClass('border-ingresar');
         } else if (action === 'retiro') {
             $('#ModalLabel').empty();
             $('#ModalLabel').append(`<svg height="40px" width="40px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -485,6 +486,7 @@ $(document).ready(function() {
 </svg>  
                             Retirar Item`);
             actionType = 'retiro';
+            $('#content-modal').removeClass('border-ingresar').addClass('border-retirar');
         }
     }
     

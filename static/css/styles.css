@@ -32,6 +32,13 @@ body {
     filter: drop-shadow(0px 3.53161px 3.53161px rgba(0, 0, 0, 0.25)) !important;
     backdrop-filter: blur(12.6814px) !important;
 }
+
+.border-retirar{
+    border-color: rgba(255, 42, 42, 0.15) !important;
+}
+.border-ingresar{
+    border-color: rgba(156, 255, 42, 0.15) !important;
+}
 .modal-header{
 
     display: flex !important;
@@ -100,7 +107,7 @@ header nav ul {
     flex-direction: row;
     height: 100%;
     width: 100%;
-    background-color: #24262D;
+
     border-radius: 30px;
     justify-content: space-around !important;
 }
@@ -118,7 +125,14 @@ align-items: center;
     text-decoration: none;
     transition: flex-grow var(--duration) var(--ease);
 }
-
+#ingresobtn{
+    background-color: #131b1b;
+    border-radius: 30px 0px 0px 30px;
+}
+#retirarbtn{
+    background-color: #1a1317;
+    border-radius: 0px 30px 30px 0px;
+}
 .procesos a + a {
     border-left: #c2c2c26e 2px solid;
     margin-left: calc(var(--border-size) * -1);
