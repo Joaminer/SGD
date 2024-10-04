@@ -86,9 +86,9 @@ header {
 
 header nav {
     font-weight: bold !important;
-    display: flex;
+    /* display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; */
     height: 100% !important;
     border-radius: 29px;
 }
@@ -128,10 +128,20 @@ align-items: center;
 #ingresobtn{
     background-color: #131b1b;
     border-radius: 30px 0px 0px 30px;
+    transition: all 0.3s ease;
 }
 #retirarbtn{
     background-color: #1a1317;
     border-radius: 0px 30px 30px 0px;
+    transition: all 0.3s ease;
+}
+#ingresobtn:hover{
+    background-color: #1d2927;
+
+}
+#retirarbtn:hover{
+    background-color: #33272f;
+
 }
 .procesos a + a {
     border-left: #c2c2c26e 2px solid;
@@ -157,99 +167,6 @@ align-items: center;
     padding-left: 10px;
 }
 
-/* .procesos a:hover,
-.procesos a:focus {
-    flex-grow: 10;
-    outline: none;
-    text-shadow: none;
-}
-
-.procesos a:focus {
-    outline: none;
-    outline-offset: calc(var(--border-size) * -3);
-}
-
-
-
-.procesos a:active {
-    transform: translateY(var(--border-size));
-} */
-
-
-/* }
-.procesos a {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 1s ease-in-out;
-    overflow: hidden;
-    text-decoration: none;
-    color: black;
-    position: relative;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out,display 1s ease-in-out;
-
-}
-.procesos a:first-child {
-   
-    border-right: #c2c2c26e 2px solid ;
-}
-.procesos a:first-child:hover {
-   
-    border-right:none ;
-}
-.procesos a .accion-titulo {
-    display: none;
-     margin: 0px 10px; 
-    transition: all 1s ease-in-out;
-}
-
-.procesos a:hover .accion-titulo {
-    display: inline-block;
-    font-size: 16px;
-    font-weight: bold;
-    color: #96babd;
-    transition: all 1s ease-in-out;
-}
-
-
-.procesos a.ingreso:hover + a.retirar {
-    opacity: 0;
-    visibility: hidden;
-    display: none;
-    border-right: none !important;
-    border-left: none !important;
-    padding: 0px 0px;
-}
-
-
-
-.procesos a.retirar:hover ~ a.ingreso {
-    opacity: 0;
-    visibility: hidden;
-    display: none;
-    border-right: none !important;
-    border-left: none !important;
-    padding: 0px 0px;
-}
-
-
-
-header nav ul .couple a {
-    font-weight: bold !important;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 16px; 
-    color: #96babd !important; 
-    padding: 12px 20px; 
-  
-  
-
-   
-
-} */
 header nav ul .single a {
     font-weight: 100 !important;
     text-decoration: none;
@@ -263,15 +180,16 @@ header nav ul .single a {
     align-items: center !important;
     gap: 10px;
 }
-header nav ul .single:first-child a {
+header nav ul .single:first-child {
     border-right: 2px solid rgba(36, 38, 45, 0.69);
 }
-header nav ul .single:last-child a {
+header nav ul .single:last-child  {
     border-left: 2px solid rgba(36, 38, 45, 0.69);
 }
-header nav ul  {
+header nav ul .single {
     width: 100% !important;
     height: 100% !important;
+    padding: 0 6px !important;
 }
 header nav ul li  {
     width: 100% !important;
@@ -281,13 +199,18 @@ header nav ul .single a svg{
     padding: 1px !important;
     transition:stroke 0.2s, fill 0.2s !important;
 }
+header nav ul .single a{
+    transition: all 0.3s ease;
+    border-radius: 50px !important;
+    
+}
 header nav ul .single a:hover {
     text-decoration: none;
-    color: #C52E2E !important;
-    border-radius: 5px;
+    background-color: rgba(109, 88, 88, 0.281) !important;
+    
 }
 
-header nav ul .single:last-child a:hover svg path {
+/* header nav ul .single:last-child a:hover svg path {
     stroke: #C52E2E !important;
 }
 
@@ -296,9 +219,9 @@ header nav ul .single:last-child a:hover svg path{
 }
 
 header nav ul .single a:hover svg path {
-    stroke: #C52E2E !important; /* Cambia el color de trazo del primer path */
-    fill: #C52E2E !important; /* Cambia el color de relleno del segundo path */
-}
+    stroke: #C52E2E !important; 
+    fill: #C52E2E !important; 
+} */
 
 
 

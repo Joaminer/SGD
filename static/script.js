@@ -16,7 +16,7 @@ $(document).ready(function() {
         $('#confirmed-items-container').append(itemHtml);
     }
 
-    
+    let isValid = true;
     
     $('#addItem').on('click', function() {
         let modeloInput = $('#modelo');
@@ -42,7 +42,7 @@ $(document).ready(function() {
         };
     
         // Validar todos los campos
-        let isValid = true;
+      
         if (!modeloInput.val()) {
             modeloInput.addClass('is-invalid');
             isValid = false;
@@ -92,12 +92,7 @@ $(document).ready(function() {
             stockCriticoInput.removeClass('is-invalid');
         }
     
-        if (!barcodeInput.val()) {
-            barcodeInput.addClass('is-invalid');
-            isValid = false;
-        } else {
-            barcodeInput.removeClass('is-invalid');
-        }
+      
     
         if (!categoriaInput.val()) {
             categoriaInput.addClass('is-invalid');
@@ -142,30 +137,43 @@ $(document).ready(function() {
             url: '/api/search',
             method: 'GET',  
             data: { query: query },
-
+    
             success: function(data) {
                 let resultsContainer = $('#search-results');
                 resultsContainer.empty();
-                data.forEach(item => {
+                
+                if (data.length === 0) {
+                    // Mostrar mensaje cuando no hay resultados
                     resultsContainer.append(`
-                        <div class="search-result-card" data-item='${JSON.stringify(item)}'>
-                            <p>${item.categoria} - ${item.modelo}</p>
+                        <div >
+                            <p>No se encontraron resultados</p>
                         </div>
                     `);
-                });
-                $('.search-result-card').on('click', function() {
-                    let item = $(this).data('item');
-                    
-                    $('#categoria').val(item.categoria).prop('disabled', false);
-                    $('#modelo').val(item.modelo).prop('disabled', false);
-                    $('#types').val(item.tipo).prop('disabled', true);
-                    $('#locations').val(item.ubicacion).prop('disabled', false);
-                    $('#units').val(item.unidad).prop('disabled', true);
-                    $('#states').val(item.estado).prop('disabled', false);
-                    $('#stock_critico').val(item.stock_critico).prop('disabled', false);
-                    $('#search-results-container').hide();
-                    
-                });
+                  
+                } else {
+                    // Si hay resultados, mostrarlos
+                    data.forEach(item => {
+                        resultsContainer.append(`
+                            <div class="search-result-card" data-item='${JSON.stringify(item)}'>
+                                <p>${item.categoria} - ${item.modelo}</p>
+                            </div>
+                        `);
+                    });
+    
+                    // Manejar el click en los resultados
+                    $('.search-result-card').on('click', function() {
+                        let item = $(this).data('item');
+                        
+                        $('#categoria').val(item.categoria).prop('disabled', false);
+                        $('#modelo').val(item.modelo).prop('disabled', false);
+                        $('#types').val(item.tipo).prop('disabled', true);
+                        $('#locations').val(item.ubicacion).prop('disabled', false);
+                        $('#units').val(item.unidad).prop('disabled', true);
+                        $('#states').val(item.estado).prop('disabled', false);
+                        $('#stock_critico').val(item.stock_critico).prop('disabled', false);
+                        $('#search-results-container').hide();
+                    });
+                }
             },
             error: function(error) {
                 console.error('Error fetching materials:', error);
@@ -352,13 +360,28 @@ $(document).ready(function() {
         }
     });
     
-    $('#barcode').on('input', function() {
-        let barcode = $(this).val().trim();
-        if (barcode.length === 12) { // Assuming the barcode length is 12
+    $('#barcode').on('input', handleEvent);
+    $('#generate-code').on('click', handleEvent);
+    
+    function handleEvent(event) {
+        let barcode;
+        let barcodeError = $('#barcode-error');
+    
+        // Obtener el valor del input al activar el evento correspondiente
+        if (event.type === 'input') {
+            barcode = $(this).val().trim();
+        } else if (event.type === 'click') {
+            barcode = $('#barcode').val().trim();
+        }
+    
+        console.log(barcode.length);
+        
+        if (barcode.length === 12) { // Suponiendo que la longitud del código de barras es 12
             $.ajax({
                 url: '/api/item_by_barcode',
                 method: 'GET',
                 data: { barcode: barcode },
+    
                 success: function(response) {
                     if (response.success) {
                         let item = response.item;
@@ -369,22 +392,26 @@ $(document).ready(function() {
                         $('#units').val(item.unidad).prop('disabled', true);
                         $('#states').val(item.estado).prop('disabled', false);
                         $('#stock_critico').val(item.stock_critico).prop('disabled', false);
-                        $('#flush-collapseOne').collapse('hide'); // Close the accordion
+                        $('#barcode').removeClass('is-invalid').addClass('is-valid'); // Cambiado `this` a `#barcode`
+                        barcodeError.text('');
                         updateUnits(item.categoria);
                         if (activeInput && activeInput.attr('id') !== 'barcode') {
                             activeInput.val('');
                         }
-                    } else {
-                        $('#notificationMessage').text('No se encontró el ítem con el código de barras proporcionado.');
-                        $('#notificationModal').modal('show');
                     }
                 },
                 error: function(error) {
-                    console.error('Error al buscar el ítem por código de barras:', error);
+                    $('#barcode').addClass('is-invalid'); // Cambiado `this` a `#barcode`
+                    barcodeError.text('No se encontró el ítem con el código de barras proporcionado.');
                 }
             });
+        } else {
+            $('#barcode').addClass('is-invalid'); // Cambiado `this` a `#barcode`
+            isValid = false;
+            barcodeError.text('El código de barras debe tener 12 dígitos.');
         }
-    });
+    }
+    
 
     $(document).on('click', function(event) {
         if (!$(event.target).closest('.search-container').length) {

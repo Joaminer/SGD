@@ -115,7 +115,7 @@ def generate_code():
         cursor.execute("SELECT COUNT(*) FROM items WHERE codigo_barras = ?", (code,))
         if cursor.fetchone()[0] == 0:
             break
-
+            
     conn.close()
     return jsonify({'code': code})
 

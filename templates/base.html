@@ -31,9 +31,9 @@
                             <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
                             <svg class="rotate-svg" height="40px" width="40px"  version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                  viewBox="0 0 512 512" xml:space="preserve">
-                            <path style="fill:rgba(36, 38, 45, 0.938);" d="M395.47,296.3H116.531c-36.816,0-57.855-42.009-35.803-71.491L225.983,30.621
+                            <path style="fill:#131b1b00;" d="M395.47,296.3H116.531c-36.816,0-57.855-42.009-35.803-71.491L225.983,30.621
                                 c14.993-20.043,45.041-20.043,60.034,0l145.254,194.188C453.325,254.291,432.286,296.3,395.47,296.3z"/>
-                            <path style="fill:  #94b09d;" d="M443.755,215.471L298.501,21.284C288.382,7.759,272.893,0,256.001,0s-32.383,7.759-42.5,21.284
+                            <path style="fill:  #94AFB0;" d="M443.755,215.471L298.501,21.284C288.382,7.759,272.893,0,256.001,0s-32.383,7.759-42.5,21.284
                                 L68.245,215.471c-13.759,18.393-15.916,42.579-5.631,63.119c10.286,20.54,30.946,33.298,53.916,33.298h66.552
                                 C185.227,422.598,275.94,512,387.153,512c8.608,0,15.589-6.979,15.589-15.589V381.652c0-8.61-6.981-15.589-15.589-15.589
                                 c-14.01,0-27.556-5.074-38.144-14.29c-6.494-5.651-16.339-4.971-21.993,1.525c-5.653,6.494-4.97,16.34,1.525,21.993
@@ -49,9 +49,9 @@
 
 <svg height="40px" width="40px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
 	 viewBox="0 0 512 512" xml:space="preserve">
-<path style="fill:rgba(36, 38, 45, 0.69);" d="M395.47,296.3H116.531c-36.816,0-57.855-42.009-35.803-71.491L225.983,30.621
+<path style="fill:#1a131700;" d="M395.47,296.3H116.531c-36.816,0-57.855-42.009-35.803-71.491L225.983,30.621
 	c14.993-20.043,45.041-20.043,60.034,0l145.254,194.188C453.325,254.291,432.286,296.3,395.47,296.3z"/>
-<path style="fill:#b0949a;" d="M443.755,215.471L298.501,21.284C288.382,7.759,272.893,0,256.001,0s-32.383,7.759-42.5,21.284
+<path style="fill:#94AFB0;" d="M443.755,215.471L298.501,21.284C288.382,7.759,272.893,0,256.001,0s-32.383,7.759-42.5,21.284
 	L68.245,215.471c-13.759,18.393-15.916,42.579-5.631,63.119c10.286,20.54,30.946,33.298,53.916,33.298h66.552
 	C185.227,422.598,275.94,512,387.153,512c8.608,0,15.589-6.979,15.589-15.589V381.652c0-8.61-6.981-15.589-15.589-15.589
 	c-14.01,0-27.556-5.074-38.144-14.29c-6.494-5.651-16.339-4.971-21.993,1.525c-5.653,6.494-4.97,16.34,1.525,21.993
@@ -211,17 +211,18 @@
                             <form id="ingresoForm" class="needs-validation " novalidate >
                                 <div class="form-group mb-3">
                                     
-                                        <div class="input-group mb-3">
-                                            <div class="form-floating m-0">
-                                                <input type="text" class="form-control" placeholder="Código de Barras" id="barcode" name="codigo_barras" required>
-                                                <label for="barcode">Código de Barras</label>
-                                                
-                                                </div>
-                                                <button class="btn btn-secondary" type="button" id="generate-code">Generar</button>
-                                          
-                                                <div class="invalid-feedback">Código de barras es obligatorio.</div>
-                                    </div>
-                                    
+                                    <div class="input-group mb-3">
+                                        <div class="form-floating m-0 ">
+                                            
+                                            <input type="text" class="form-control" placeholder="Código de Barras" id="barcode" name="codigo_barras" required>
+                                            <div class="invalid-feedback" id="barcode-error">Código de barras es obligatorio.</div>
+                                            <label for="barcode">Código de Barras</label>
+                                           
+                                        </div>
+                                        
+                                        <button class="btn btn-secondary" type="button" id="generate-code">Generar</button>
+                                        
+                                    </div>  
                                 </div>
                                 <div class="row">
                                     <div class="col">
