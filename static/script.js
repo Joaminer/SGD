@@ -361,22 +361,39 @@ $(document).ready(function() {
     });
     
     $('#barcode').on('input', handleEvent);
-    $('#generate-code').on('click', handleEvent);
+    $('#generate-code').on('click', function() {
+        let inputField = $('#barcode');
+        
+        // Genera el código primero
+        $.ajax({
+            url: '/api/generate_code',
+            method: 'GET',
+            success: function(data) {
+                inputField.val(data.code); // Actualiza el valor del input con el código generado
+                // Después de actualizar el valor, llama a handleEvent para manejar la validación
+                handleEvent({ type: 'click' });
+            },
+            error: function(error) {
+                console.error('Error generating code:', error);
+            }
+        });
+    });
     
     function handleEvent(event) {
         let barcode;
         let barcodeError = $('#barcode-error');
-    
+        
         // Obtener el valor del input al activar el evento correspondiente
         if (event.type === 'input') {
             barcode = $(this).val().trim();
         } else if (event.type === 'click') {
             barcode = $('#barcode').val().trim();
         }
-    
+        
+        console.log(barcode);
         console.log(barcode.length);
         
-        if (barcode.length === 12) { // Suponiendo que la longitud del código de barras es 12
+        if (barcode.length === 12) {
             $.ajax({
                 url: '/api/item_by_barcode',
                 method: 'GET',
@@ -392,7 +409,7 @@ $(document).ready(function() {
                         $('#units').val(item.unidad).prop('disabled', true);
                         $('#states').val(item.estado).prop('disabled', false);
                         $('#stock_critico').val(item.stock_critico).prop('disabled', false);
-                        $('#barcode').removeClass('is-invalid').addClass('is-valid'); // Cambiado `this` a `#barcode`
+                        $('#barcode').removeClass('is-invalid').addClass('is-valid');
                         barcodeError.text('');
                         updateUnits(item.categoria);
                         if (activeInput && activeInput.attr('id') !== 'barcode') {
@@ -401,16 +418,16 @@ $(document).ready(function() {
                     }
                 },
                 error: function(error) {
-                    $('#barcode').addClass('is-invalid'); // Cambiado `this` a `#barcode`
+                    $('#barcode').addClass('is-invalid');
                     barcodeError.text('No se encontró el ítem con el código de barras proporcionado.');
                 }
             });
         } else {
-            $('#barcode').addClass('is-invalid'); // Cambiado `this` a `#barcode`
-            isValid = false;
+            $('#barcode').addClass('is-invalid');
             barcodeError.text('El código de barras debe tener 12 dígitos.');
         }
     }
+    
     
 
     $(document).on('click', function(event) {
@@ -459,20 +476,7 @@ $(document).ready(function() {
         console.log(category);
     });
 
-    $('#generate-code').on('click', function() {
-        let inputField = $('#barcode');
-        console.log(actionType);
-        $.ajax({
-            url: '/api/generate_code',
-            method: 'GET',
-            success: function(data) {
-                inputField.val(data.code);
-            },
-            error: function(error) {
-                console.error('Error generating code:', error);
-            }
-        });
-    });
+    
 
     let actionType = ' ';
     function setAction(action) {
