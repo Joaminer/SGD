@@ -47,6 +47,7 @@ $(document).ready(function() {
             modeloInput.addClass('is-invalid');
             isValid = false;
         } else {
+            isValid = true;
             modeloInput.removeClass('is-invalid');
         }
     
@@ -54,6 +55,7 @@ $(document).ready(function() {
             tipoSelect.addClass('is-invalid');
             isValid = false;
         } else {
+            isValid = true;
             tipoSelect.removeClass('is-invalid');
         }
     
@@ -61,6 +63,7 @@ $(document).ready(function() {
             ubicacionInput.addClass('is-invalid');
             isValid = false;
         } else {
+            isValid = true;
             ubicacionInput.removeClass('is-invalid');
         }
     
@@ -68,6 +71,7 @@ $(document).ready(function() {
             cantidadInput.addClass('is-invalid');
             isValid = false;
         } else {
+            isValid = true;
             cantidadInput.removeClass('is-invalid');
         }
     
@@ -75,6 +79,7 @@ $(document).ready(function() {
             unidadSelect.addClass('is-invalid');
             isValid = false;
         } else {
+            isValid = true;
             unidadSelect.removeClass('is-invalid');
         }
     
@@ -82,6 +87,7 @@ $(document).ready(function() {
             estadoSelect.addClass('is-invalid');
             isValid = false;
         } else {
+            isValid = true;
             estadoSelect.removeClass('is-invalid');
         }
     
@@ -89,6 +95,7 @@ $(document).ready(function() {
             stockCriticoInput.addClass('is-invalid');
             isValid = false;
         } else {
+            isValid = true;
             stockCriticoInput.removeClass('is-invalid');
         }
     
@@ -98,11 +105,12 @@ $(document).ready(function() {
             categoriaInput.addClass('is-invalid');
             isValid = false;
         } else {
+            isValid = true;
             categoriaInput.removeClass('is-invalid');
         }
         // Validar cada campo y mostrar mensajes de error si es necesario
     
-    
+        console.log(isValid)
         // Si todos los campos son válidos, agregar el ítem a la lista
         if (isValid) {
             $('#types').prop('disabled', false)
@@ -419,6 +427,7 @@ $(document).ready(function() {
                 },
                 error: function(error) {
                     $('#barcode').addClass('is-invalid');
+                    isValid=true
                     barcodeError.text('No se encontró el ítem con el código de barras proporcionado.');
                 }
             });
