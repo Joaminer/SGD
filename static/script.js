@@ -3,6 +3,7 @@ $(document).ready(function() {
     let itemCount = 1;
 
     function addItemToConfirmedList(item) {
+        barcodeInput.removeClass('is-valid');
         let itemHtml = `
             <li class="list-group-item confirmed-item p-1 animate__animated animate__fadeInUp" data-tipo="${item.tipo}" data-ubicacion="${item.ubicacion}" data-estado="${item.estado}" data-stock_critico="${item.stock_critico}" data-unidad="${item.unidad}">
                 <div class="card-body">
@@ -17,8 +18,9 @@ $(document).ready(function() {
     }
 
     let isValid = true;
-    
+
     $('#addItem').on('click', function() {
+        isValid = true;
         let modeloInput = $('#modelo');
         let tipoSelect = $('#types');
         let ubicacionInput = $('#locations');
@@ -28,7 +30,7 @@ $(document).ready(function() {
         let stockCriticoInput = $('#stock_critico');
         let barcodeInput = $('#barcode');
         let categoriaInput = $('#categoria');
-    
+        
         let item = {
             codigo_barras: barcodeInput.val(),
             categoria: categoriaInput.val(),
@@ -47,7 +49,7 @@ $(document).ready(function() {
             modeloInput.addClass('is-invalid');
             isValid = false;
         } else {
-            isValid = true;
+            
             modeloInput.removeClass('is-invalid');
         }
     
@@ -55,7 +57,7 @@ $(document).ready(function() {
             tipoSelect.addClass('is-invalid');
             isValid = false;
         } else {
-            isValid = true;
+            
             tipoSelect.removeClass('is-invalid');
         }
     
@@ -63,15 +65,16 @@ $(document).ready(function() {
             ubicacionInput.addClass('is-invalid');
             isValid = false;
         } else {
-            isValid = true;
+            
             ubicacionInput.removeClass('is-invalid');
         }
-    
-        if (!cantidadInput.val()) {
+        
+        if (!cantidadInput.val() || cantidadInput.val() <= 0) {
+            $('#cantidad-error').text('Debe ser mayor o igual 0');
             cantidadInput.addClass('is-invalid');
             isValid = false;
         } else {
-            isValid = true;
+            
             cantidadInput.removeClass('is-invalid');
         }
     
@@ -79,7 +82,7 @@ $(document).ready(function() {
             unidadSelect.addClass('is-invalid');
             isValid = false;
         } else {
-            isValid = true;
+            
             unidadSelect.removeClass('is-invalid');
         }
     
@@ -87,15 +90,16 @@ $(document).ready(function() {
             estadoSelect.addClass('is-invalid');
             isValid = false;
         } else {
-            isValid = true;
+            
             estadoSelect.removeClass('is-invalid');
         }
     
-        if (!stockCriticoInput.val()) {
+        if (!stockCriticoInput.val() || stockCriticoInput.val() < 0) {
+            $('#stock_critico-error').text('Debe ser mayor a 0');
             stockCriticoInput.addClass('is-invalid');
             isValid = false;
         } else {
-            isValid = true;
+            
             stockCriticoInput.removeClass('is-invalid');
         }
     
@@ -105,7 +109,7 @@ $(document).ready(function() {
             categoriaInput.addClass('is-invalid');
             isValid = false;
         } else {
-            isValid = true;
+            
             categoriaInput.removeClass('is-invalid');
         }
         // Validar cada campo y mostrar mensajes de error si es necesario
@@ -140,6 +144,7 @@ $(document).ready(function() {
     $(document).on('click', '.delete-item', function() {
         $(this).closest('.confirmed-item').remove();
     });
+
     function fetchAndDisplayMaterials(query = '') {
         $.ajax({
             url: '/api/search',
@@ -180,6 +185,7 @@ $(document).ready(function() {
                         $('#states').val(item.estado).prop('disabled', false);
                         $('#stock_critico').val(item.stock_critico).prop('disabled', false);
                         $('#search-results-container').hide();
+                        
                     });
                 }
             },
@@ -198,9 +204,24 @@ $(document).ready(function() {
     });
     //  redundante
     $('#modelo').on('input', function() {
+        let query = $(this).val();
         let category = $('#categoria').val(); // Obtener la categoría actual
         if (category) {
-            updateModels(category); // Reestablecer el datalist de modelos según la categoría
+            updateModels(category);
+            $.ajax({
+                url: '/api/cantidad_modelo',
+                method: 'GET',  
+                data: { query: query },
+        
+                success: function(data) {
+                    let stock = $('#basic-addon2');
+                    console.log(data[0][0])
+                    stock.text(data[0][0]);
+                },
+                error: function(error) {
+                    console.error('Error fetching materials:', error);
+                }
+            });
         }
     });
     function updateModels(category) {
@@ -241,14 +262,18 @@ $(document).ready(function() {
     }
     function updateDatalists() {
         // Actualiza categorías, tipos, ubicaciones, unidades y estados
-        $.get('/api/categories', function(data) {
-            let categoriesDatalist = $('#categories');
-            categoriesDatalist.empty();
-            data.forEach(category => {
-                categoriesDatalist.append(`<option value="${category}">`);
-            });
-        });
-
+ 
+        $.ajax({
+            url: '/api/categories',
+            method: 'GET',
+            success: function(data) {
+                let categoriesDatalist = $('#categories');
+                categoriesDatalist.empty();
+                data.forEach(category => {
+                    categoriesDatalist.append(`<option value="${category}">${category}</option>`);
+                });
+            }
+        })
         $.ajax({
             url: '/api/types',
             method: 'GET',
@@ -329,7 +354,7 @@ $(document).ready(function() {
         const barcodeInputTimeout = 200; // Tiempo en milisegundos para detectar escaneo rápido
         barcodeInput.focus();
 
-        // Puedes agregar una función para enfocar el campo cuando se muestre el formulario
+        // Puedes agregar una función para enfocar el cacampo cuando se muestre el formulario
         $('#ingresoForm').on('show.bs.collapse', function() {
             barcodeInput.focus();
         });
@@ -360,6 +385,7 @@ $(document).ready(function() {
     
     $('#search').on('input', function() {
         let query = $(this).val();
+        console.log(query);
         if (query) {
             $('#search-results-container').show();
             fetchAndDisplayMaterials(query);
@@ -412,7 +438,7 @@ $(document).ready(function() {
                         let item = response.item;
                         $('#categoria').val(item.categoria).prop('disabled', false);
                         $('#modelo').val(item.modelo).prop('disabled', false);
-                        $('#types').val(item.tipo).prop('disabled', false);
+                        $('#types').val(item.tipo).prop('disabled', true);
                         $('#locations').val(item.ubicacion).prop('disabled', false);
                         $('#units').val(item.unidad).prop('disabled', true);
                         $('#states').val(item.estado).prop('disabled', false);
@@ -469,11 +495,17 @@ $(document).ready(function() {
                         } else {
                             $('input[name="stock_critico"]').val('').prop('disabled', false);
                         }
-                        
+                            
                         if (response.unidad) {
                             $('select[name="unidad"]').val(response.unidad).prop('disabled', true);
                         } else {
                             $('select[name="unidad"]').val('').prop('disabled', false);
+                        }
+                        console.log(response.total)
+                        if (response.total) {
+                            $('#category-error').text('Total: ' + response.total).addClass('d-block');
+                        } else {
+                            $('#category-error').text('').removeClass('d-block').addClass('d-none');
                         }
                     },
                     error: function(error) {

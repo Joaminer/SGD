@@ -227,13 +227,22 @@
                                 <div class="row">
                                     <div class="col">
                                 <div class="form-group mb-3">
-                                    <div class="form-floating m-0">
-                                        <input list="categories" type="text" class="form-control" id="categoria" placeholder="Categoría" name="categoria" required>
-                                        <datalist id="categories"></datalist>
-                                        <div class="invalid-feedback">Categoría es obligatoria.</div>
-                                        <label for="categoria">Categoria</label>
-                                    </div>
                                     
+                                    <div class="form-floating m-0">
+                                       
+                                        <input list="categories" type="text" class="form-control" id="categoria" placeholder="" name="categoria" aria-describedby="basic-addon2" required>
+                                            
+                                        <label for="categoria">Categoria</label>
+        
+                                        <datalist id="categories"></datalist>
+                                        
+                                        <div class="invalid-feedback" id="category-error">Categoría es obligatoria.</div>
+                                        
+                                    </div>
+                                    <!-- <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" >
+                                        
+                                      </div> -->
                                 </div>
                             </div>
                             <div class="col">
@@ -280,16 +289,20 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group mb-3 d-f">
-                                            <input type="number" class="form-control" id="stock_critico" placeholder="Stock Crítico" name="stock_critico" required>
-                                            <div class="invalid-feedback">Stock crítico es obligatorio.</div>
+                                            <input type="number" class="form-control" id="stock_critico" placeholder="Stock Crítico" name="stock_critico" min="0" oninput="validity.valid||(value='');" required>
+                                            <div class="invalid-feedback" id="stock_critico-error">Stock crítico es obligatorio.</div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col">
-                                        <input type="number" class="form-control" id="cantidad" placeholder="Cantidad" name="cantidad" required>
-                                        <div class="invalid-feedback">Cantidad es obligatoria y debe ser mayor a 0.</div>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" id="cantidad" placeholder="Cantidad" name="cantidad" min="0" oninput="validity.valid||(value='');"  aria-describedby="basic-addon2" required>
+                                            <span class="input-group-text" id="basic-addon2">stock</span>
+                                            <div class="invalid-feedback" id="cantidad-error">Cantidad es obligatoria y debe ser mayor a 0.</div>
+                                        </div>
                                     </div>
+                                    
                                     <div class="col">
                                         <select class="form-select" id="units" name="unidad" required>
                                             <option value="" selected disabled>Unidad</option>

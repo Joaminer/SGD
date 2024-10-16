@@ -101,10 +101,27 @@ def search():
             'stock_critico': result[8],
         } for result in results
     ]
-
+    
     return jsonify(items)
 
-
+@app.route('/api/cantidad_modelo', methods=['GET'])
+def cantidad_modelo():
+    query = request.args.get('query', '').lower()
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    
+    cursor.execute("""
+        SELECT items.cantidad
+        FROM items
+        JOIN categorias ON items.category_id = categorias.id
+        WHERE LOWER(categorias.nombre) LIKE ? 
+        OR LOWER(items.modelo) LIKE ?""", 
+        ('%' + query + '%', '%' + query + '%')
+    )
+    results = cursor.fetchall()
+    connection.close()
+    print(results)  
+    return jsonify(results)
 @app.route('/api/generate_code', methods=['GET'])
 def generate_code():
     conn = sqlite3.connect('materials.db')
@@ -118,6 +135,7 @@ def generate_code():
             
     conn.close()
     return jsonify({'code': code})
+
 
 
 @app.route('/api/confirm_user', methods=['POST'])
@@ -256,11 +274,10 @@ def confirm_user():
 def get_categories():
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT nombre FROM categorias')
+    cursor.execute('SELECT nombre, total FROM categorias')
     categories = cursor.fetchall()
     connection.close()
     return jsonify([row[0] for row in categories])
-
 
 @app.route('/api/models', methods=['GET'])
 def get_models():
@@ -413,7 +430,7 @@ def get_category_details():
     cursor = connection.cursor()
     
     cursor.execute('''
-        SELECT tipo, stock_critico, unidad
+        SELECT tipo, stock_critico, unidad ,total
         FROM categorias
         WHERE LOWER(nombre) = ?
     ''', (category,))
@@ -425,13 +442,15 @@ def get_category_details():
         return jsonify({
             'tipo': details[0],
             'stock_critico': details[1],
-            'unidad': details[2]
+            'unidad': details[2],
+            'total': details[3]
         })
     else:
         return jsonify({
             'tipo': None,
             'stock_critico': None,
-            'unidad': None
+            'unidad': None,
+            'total': None
         })
         
 @app.route('/api/user_search', methods=['GET'])

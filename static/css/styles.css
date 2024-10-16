@@ -34,10 +34,10 @@ body {
 }
 
 .border-retirar{
-    border-color: rgba(255, 42, 42, 0.15) !important;
+    border-color: rgb(176 148 154 / 50%) !important;
 }
 .border-ingresar{
-    border-color: rgba(156, 255, 42, 0.15) !important;
+    border-color: rgb(148 176 157 / 50%) !important ;
 }
 .modal-header{
 
