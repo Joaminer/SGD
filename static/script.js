@@ -70,10 +70,20 @@ $(document).ready(function() {
         }
         
         if (!cantidadInput.val() || cantidadInput.val() <= 0) {
-            $('#cantidad-error').text('Debe ser mayor o igual 0');
+            $('#cantidad-error').text('Debe ser mayor 0');
             cantidadInput.addClass('is-invalid');
             isValid = false;
         } else {
+            
+            cantidadInput.removeClass('is-invalid');
+        }
+
+        if(actionType === 'retiro' && cantidadInput.val() > $('#basic-addon2').text()){ 
+            $('#cantidad-error').text('Debe ser menor al stock actual');
+            cantidadInput.addClass('is-invalid');
+            isValid = false;
+        }
+        else {
             
             cantidadInput.removeClass('is-invalid');
         }
@@ -95,7 +105,7 @@ $(document).ready(function() {
         }
     
         if (!stockCriticoInput.val() || stockCriticoInput.val() < 0) {
-            $('#stock_critico-error').text('Debe ser mayor a 0');
+            $('#stock_critico-error').text('Debe ser mayor o igual a 0');
             stockCriticoInput.addClass('is-invalid');
             isValid = false;
         } else {
@@ -105,13 +115,7 @@ $(document).ready(function() {
     
       
     
-        if (!categoriaInput.val()) {
-            categoriaInput.addClass('is-invalid');
-            isValid = false;
-        } else {
-            
-            categoriaInput.removeClass('is-invalid');
-        }
+        
         // Validar cada campo y mostrar mensajes de error si es necesario
     
         console.log(isValid)
@@ -123,6 +127,7 @@ $(document).ready(function() {
             $('#ingresoForm').trigger('reset');
         } 
     });
+    
     
     //Editar elimina y sobreescribe
     $(document).on('click', '.edit-item', function() {
@@ -185,6 +190,7 @@ $(document).ready(function() {
                         $('#states').val(item.estado).prop('disabled', false);
                         $('#stock_critico').val(item.stock_critico).prop('disabled', false);
                         $('#search-results-container').hide();
+                        updateStocks();
                         
                     });
                 }
@@ -203,8 +209,10 @@ $(document).ready(function() {
         updateModels(category); // Actualiza el datalist de modelos según la categoría autocompletada
     });
     //  redundante
-    $('#modelo').on('input', function() {
-        let query = $(this).val();
+    $('#modelo').on('input', updateStocks);
+    $('#categoria').on('input', updateStocks);
+    function updateStocks() {
+        let query = $('#modelo').val();
         let category = $('#categoria').val(); // Obtener la categoría actual
         if (category) {
             updateModels(category);
@@ -223,7 +231,50 @@ $(document).ready(function() {
                 }
             });
         }
-    });
+
+        
+        updateModels(category);
+        // updateUnits(category);
+        
+            
+            if (category) {
+                $.ajax({
+                    url: '/api/category_details',
+                    method: 'GET',
+                    data: { category: category },
+                    success: function(response) {
+                        if (response.tipo) {
+                            $('select[name="tipo"]').val(response.tipo).prop('disabled', true);
+                        } else {
+                            $('select[name="tipo"]').val('').prop('disabled', false);
+                        }
+                        
+                        if (response.stock_critico) {
+                            $('input[name="stock_critico"]').val(response.stock_critico);
+                        } else {
+                            $('input[name="stock_critico"]').val('').prop('disabled', false);
+                        }
+                            
+                        if (response.unidad) {
+                            $('select[name="unidad"]').val(response.unidad).prop('disabled', true);
+                        } else {
+                            $('select[name="unidad"]').val('').prop('disabled', false);
+                        }
+
+                        if (response.total) {
+                            $('#category-error').text('Total: ' + response.total).addClass('d-block').removeClass('d-none');
+                        } else {
+                            $('#category-error').text('').removeClass('d-block').addClass('d-none').removeClass('d-block');
+                        }
+                        },
+                    error: function(error) {
+                        console.error('Error fetching category details:', error);
+                    }
+                });
+            }
+        
+        console.log(category);
+    }
     function updateModels(category) {
         $.ajax({
             url: '/api/models',
@@ -446,6 +497,7 @@ $(document).ready(function() {
                         $('#barcode').removeClass('is-invalid').addClass('is-valid');
                         barcodeError.text('');
                         updateUnits(item.categoria);
+                        updateStocks();
                         if (activeInput && activeInput.attr('id') !== 'barcode') {
                             activeInput.val('');
                         }
@@ -471,53 +523,11 @@ $(document).ready(function() {
         }
     });
 
-    $('#categoria').on('input', function() {
-        let category = $(this).val();
-        
-        updateModels(category);
-        // updateUnits(category);
-        
-            
-            if (category) {
-                $.ajax({
-                    url: '/api/category_details',
-                    method: 'GET',
-                    data: { category: category },
-                    success: function(response) {
-                        if (response.tipo) {
-                            $('select[name="tipo"]').val(response.tipo).prop('disabled', true);
-                        } else {
-                            $('select[name="tipo"]').val('').prop('disabled', false);
-                        }
-                        
-                        if (response.stock_critico) {
-                            $('input[name="stock_critico"]').val(response.stock_critico);
-                        } else {
-                            $('input[name="stock_critico"]').val('').prop('disabled', false);
-                        }
-                            
-                        if (response.unidad) {
-                            $('select[name="unidad"]').val(response.unidad).prop('disabled', true);
-                        } else {
-                            $('select[name="unidad"]').val('').prop('disabled', false);
-                        }
-                        console.log(response.total)
-                        if (response.total) {
-                            $('#category-error').text('Total: ' + response.total).addClass('d-block');
-                        } else {
-                            $('#category-error').text('').removeClass('d-block').addClass('d-none');
-                        }
-                    },
-                    error: function(error) {
-                        console.error('Error fetching category details:', error);
-                    }
-                });
-            }
-        
-        console.log(category);
-    });
+    
 
     
+        
+  
 
     let actionType = ' ';
     function setAction(action) {

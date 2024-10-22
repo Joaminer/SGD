@@ -111,13 +111,13 @@ def cantidad_modelo():
     cursor = connection.cursor()
     
     cursor.execute("""
-        SELECT items.cantidad
-        FROM items
-        JOIN categorias ON items.category_id = categorias.id
-        WHERE LOWER(categorias.nombre) LIKE ? 
-        OR LOWER(items.modelo) LIKE ?""", 
-        ('%' + query + '%', '%' + query + '%')
-    )
+            SELECT SUM(items.cantidad)
+            FROM items
+            JOIN categorias ON items.category_id = categorias.id
+            WHERE LOWER(items.modelo) LIKE ?
+            AND categorias.id = items.category_id""", 
+        ('%' + query + '%',)
+    )   
     results = cursor.fetchall()
     connection.close()
     print(results)  
