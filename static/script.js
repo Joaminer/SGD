@@ -700,6 +700,7 @@ for (let proceso_id in groupedData) {
     // Aquí es donde decides qué SVG mostrar según el tipo de operación
     let operationIconHtml = '';
     if (operation.operacion === 'Ingreso') {
+
         operationIconHtml = `<svg class="rotate-svg" height="40px" width="40px"  version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                  viewBox="0 0 512 512" xml:space="preserve">
                             <path style="fill:rgba(36, 38, 45, 0.938);" d="M395.47,296.3H116.531c-36.816,0-57.855-42.009-35.803-71.491L225.983,30.621
@@ -715,6 +716,7 @@ for (let proceso_id in groupedData) {
                                 C425.534,243.165,426.551,254.56,421.509,264.629z"/>
                             </svg>`; // Reemplaza este ícono por tu SVG de "Ingreso"
     } else if (operation.operacion === 'Retiro') {
+   
         operationIconHtml = `<?xml version="1.0" encoding="iso-8859-1"?>
 <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
 <svg height="40px" width="40px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -752,7 +754,6 @@ for (let proceso_id in groupedData) {
         </div>
     `;
 
-    container.append(operationHtml);
 }
 
                     }

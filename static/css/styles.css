@@ -226,8 +226,12 @@ header nav ul .single a:hover svg path {
     stroke: #C52E2E !important; 
     fill: #C52E2E !important; 
 } */
-
-
+#category-error{
+    color:white !important;
+}
+#basic-addon2{
+    color:rgb(179, 223, 181) !important;
+} 
 
 .container {
     text-align: center;
@@ -323,9 +327,10 @@ header nav ul .single a:hover svg path {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #ccc;
+    border: 1px solid ;
     border-radius: 8px;
     padding: 10px;
+    border: 1px solid #96babdb6;
     margin-bottom: 10px;
     background-color: #1d1d1d; /* Fondo oscuro */
     color: #fff; /* Texto claro */

@@ -193,23 +193,23 @@
                             </div>
                             
                             <div class="sticky-top" id="scont">
-                            <div class="search-container" >
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon1">
-                                        <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke="#ffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </span>
-                                    <input type="text" class="form-control" placeholder="Buscar..." aria-label="Username" aria-describedby="basic-addon1" id="search" autocomplete="off">
-                                </div>
-                                <div id="search-results-container" class="search-results-container">
-                                    <div id="search-results" class="search-results" >
-                                        <!-- Los resultados de búsqueda se añadirán aquí -->
+                            <div class="row">
+                                <div class="search-container col" >
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">
+                                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke="#ffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </span>
+                                        <input type="text" class="form-control" placeholder="Buscar..." aria-label="Username" aria-describedby="basic-addon1" id="search" autocomplete="off">
+                                    </div>
+                                    <div id="search-results-container" class="search-results-container">
+                                        <div id="search-results" class="search-results" >
+                                            <!-- Los resultados de búsqueda se añadirán aquí -->
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <form id="ingresoForm" class="needs-validation " novalidate >
-                                <div class="form-group mb-3">
+                                <div class="form-group mb-3 col">
                                     
                                     <div class="input-group mb-3">
                                         <div class="form-floating m-0 ">
@@ -224,6 +224,10 @@
                                         
                                     </div>  
                                 </div>
+                            </div>
+                            
+                            <form id="ingresoForm" class="needs-validation " novalidate >
+                                
                                 <div class="row">
                                     <div class="col">
                                 <div class="form-group mb-3">
@@ -261,30 +265,31 @@
                                 
                                 <div class="row ">
                                     <div class="col-md-6">
-                                        <div class="form-group mb-3">
-                                            <select class="form-select" id="types" name="tipo" required>
-                                                <option value="" selected disabled>Tipo</option>
-                                            </select>
-                                            <div class="invalid-feedback">Tipo es obligatorio.</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <select class="form-select" id="locations" name="ubicacion" required>
-                                                    <option value="" selected disabled>Ubicación</option>
+                                                <select class="form-select" id="types" name="tipo" required>
+                                                    <option value="" selected disabled>Tipo</option>
                                                 </select>
-                                                <div class="invalid-feedback">Ubicación es obligatoria.</div>
+                                                <div class="invalid-feedback">Tipo es obligatorio.</div>
                                             </div>
                                     </div>
-                                   
-                                </div>
-                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group mb-3">
                                             <select class="form-select" id="states" name="estado" required>
                                                 <option value="" selected disabled>Estado</option>
                                             </select>
                                             <div class="invalid-feedback">Estado es obligatoria.</div>
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        
+                                        <div class="form-group mb-3">
+                                            <select class="form-select" id="locations" name="ubicacion" required>
+                                                <option value="" selected disabled>Ubicación</option>
+                                            </select>
+                                            <div class="invalid-feedback">Ubicación es obligatoria.</div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -295,7 +300,7 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col">
+                                    <div class="col-9">
                                         <div class="input-group mb-3">
                                             <input type="number" class="form-control" id="cantidad" placeholder="Cantidad" name="cantidad" min="0" oninput="validity.valid||(value='');"  aria-describedby="basic-addon2" required>
                                             <span class="input-group-text" id="basic-addon2">stock</span>
@@ -303,7 +308,7 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="col">
+                                    <div class="col-3">
                                         <select class="form-select" id="units" name="unidad" required>
                                             <option value="" selected disabled>Unidad</option>
                                         </select>
