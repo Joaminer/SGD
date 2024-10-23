@@ -71,7 +71,7 @@ body {
 #confirmItems,#backToItemsForm{
     border: 1.82748px solid #24262D;
     border-radius: 0px 36.5497px 36.5497px 36.0269px;
-    color: #AC0000  ;
+    color: #9c2a2a  ;
 }
 #user-search-container{
     width: 100% !important;
@@ -299,8 +299,26 @@ header nav ul .single a:hover svg path {
 }
 
 
+.bottom-input-r { 
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+  .bottom-input-l {
 
-.ser-search-container{
+    padding-left: 0 !important;
+  }
+  .brl{
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+  }
+
+  .border-input-form{
+    border-top: 1px solid #96babd79 !important; 
+  
+  }
+.ser-search-container{  
     width: 50%;
 }
 

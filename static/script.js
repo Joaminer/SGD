@@ -114,13 +114,14 @@ $(document).ready(function() {
         }
     
       
-    
+        handleEvent({ type: 'click' });
         
         // Validar cada campo y mostrar mensajes de error si es necesario
     
         console.log(isValid)
         // Si todos los campos son válidos, agregar el ítem a la lista
         if (isValid) {
+            
             $('#types').prop('disabled', false)
             $('#units').prop('disabled', false);
             addItemToConfirmedList(item);
@@ -214,7 +215,7 @@ $(document).ready(function() {
     function updateStocks() {
         let query = $('#modelo').val();
         let category = $('#categoria').val(); // Obtener la categoría actual
-        if (category) {
+        if (query) {
             updateModels(category);
             $.ajax({
                 url: '/api/cantidad_modelo',
@@ -230,6 +231,9 @@ $(document).ready(function() {
                     console.error('Error fetching materials:', error);
                 }
             });
+        }
+        else {
+            $('#basic-addon2').text("Stock");
         }
 
         
@@ -272,7 +276,9 @@ $(document).ready(function() {
                     }
                 });
             }
-        
+            else{
+                $('#category-error').text('').removeClass('d-block').addClass('d-none').removeClass('d-block');
+            }
         console.log(category);
     }
     function updateModels(category) {
@@ -333,6 +339,10 @@ $(document).ready(function() {
                 data.forEach(type => {
                     typesDatalist.append(`<option value="${type}">${type}</option>`);
                 });
+                let tipoConfig = $('#tipoConfig');
+                data.forEach(type => {
+                    tipoConfig.append(`<p>${type}</p>`);
+                });
             }
         });
 
@@ -346,7 +356,12 @@ $(document).ready(function() {
                 data.forEach(location => {
                     locationsDatalist.append(`<option value="${location}">${location}</option>`);
                 });
-            }
+                let ubicacionConfig = $('#ubicacionConfig');
+                // locationsDatalist.empty();
+                data.forEach(location => {
+                    ubicacionConfig.append(`<p>${location}</p>`);
+                });
+            }       
         });
         $.ajax({
             url: '/api/sections',
@@ -498,6 +513,7 @@ $(document).ready(function() {
                         barcodeError.text('');
                         updateUnits(item.categoria);
                         updateStocks();
+                        isValid = true
                         if (activeInput && activeInput.attr('id') !== 'barcode') {
                             activeInput.val('');
                         }
@@ -511,6 +527,7 @@ $(document).ready(function() {
             });
         } else {
             $('#barcode').addClass('is-invalid');
+            isValid=false
             barcodeError.text('El código de barras debe tener 12 dígitos.');
         }
     }
@@ -594,7 +611,7 @@ $(document).ready(function() {
     let items = [];
     $('#confirmItems').on('click', function(event) {
         event.preventDefault();
-    
+        updateStocks();
         items = []; // Reinicia la variable items
     
         $('#confirmed-items-container .confirmed-item').each(function() {
@@ -684,7 +701,7 @@ $(document).ready(function() {
         
                         // Ahora iteramos sobre los grupos y los mostramos en el HTML
                         // Ahora iteramos sobre los grupos y los mostramos en el HTML
-for (let proceso_id in groupedData) {
+for (let proceso_id in groupedData) {       
     const operation = groupedData[proceso_id];
     let itemsHtml = '';
 
@@ -753,7 +770,7 @@ for (let proceso_id in groupedData) {
             </div>
         </div>
     `;
-
+    container.append(operationHtml);
 }
 
                     }
