@@ -341,7 +341,7 @@ $(document).ready(function() {
                 });
                 let tipoConfig = $('#tipoConfig');
                 data.forEach(type => {
-                    tipoConfig.append(`<p>${type}</p>`);
+                    tipoConfig.append(`<div class="valor d-flex justify-content mt-2"><p class="text-align-center me-2">${type}</p> <button class="btn btn-danger btn-sm">Eliminar</button></div>`);
                 });
             }
         });
@@ -373,6 +373,12 @@ $(document).ready(function() {
                 data.forEach(section => {
                     sectionsDatalist.append(`<option value="${section}">${section}</option>`);
                 });
+                let seccionConfig = $('#seccionConfig');
+                // locationsDatalist.empty();
+              
+                data.forEach(section => {
+                    seccionConfig.append(`<div class="valor d-flex justify-content mt-2"><p class="text-align-center me-2">${section}</p> <button class="btn btn-danger btn-sm">Eliminar</button></div>`);
+                });
             }
         });
         // Unidades
@@ -385,6 +391,11 @@ $(document).ready(function() {
                 data.forEach(unit => {
                     unitsDatalist.append(`<option value="${unit}">${unit}</option>`);
                 });
+                let unidadesConfig = $('#unidadesConfig');
+
+                data.forEach(unit => {
+                    unidadesConfig.append(`<p>${unit}</p>`);
+                });
             }
         });
         $.ajax({
@@ -395,6 +406,11 @@ $(document).ready(function() {
 
                 data.forEach(states => {
                     statesDatalist.append(`<option value="${states}">${states}</option>`);
+                });
+                let estadoConfig = $('#estadoConfig');
+
+                data.forEach(states => {
+                    estadoConfig.append(`<p>${states}</p>`);
                 });
             }
         });
