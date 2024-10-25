@@ -204,7 +204,7 @@ header nav ul .single a svg{
     transition:stroke 0.2s, fill 0.2s !important;
 }
 header nav ul .single a{
-    transition: all 0.3s ease;
+    transition: all 0s ease;
     border-radius: 50px !important;
     
 }
@@ -401,3 +401,42 @@ header nav ul .single a:hover svg path {
     transform: rotate(180deg);
 }
 
+.button-58 {
+    width: 20% !important;
+    align-items: center;
+    background-color: #06f;
+    border: 2px solid #06f;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    fill: #000;
+    font-family: Inter,sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    justify-content: center;
+    letter-spacing: -.8px;
+    line-height: 24px;
+    outline: 0;
+    padding: 0 17px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    border-radius: 0px 10px 10px 0px;
+  }
+  
+  .button-58:focus {
+    color: rgb(0, 0, 0);
+  }
+  #barcode-error{
+    font-size: 0.86rem !important;
+  }
+  .button-58:hover {
+    background-color: #3385ff;
+    border-color: #3385ff;
+    fill: #06f;
+  }
+  

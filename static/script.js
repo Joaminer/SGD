@@ -538,7 +538,7 @@ $(document).ready(function() {
                 error: function(error) {
                     $('#barcode').addClass('is-invalid');
                     isValid=true
-                    barcodeError.text('No se encontró el ítem con el código de barras proporcionado.');
+                    barcodeError.text('No se encontró el ítem con el código de barras.');
                 }
             });
         } else {
