@@ -346,12 +346,23 @@ header nav ul .single a:hover svg path {
     justify-content: space-between;
     align-items: center;
     border: 1px solid ;
-    border-radius: 8px;
+
     padding: 10px;
-    border: 1px solid #96babdb6;
+
     margin-bottom: 10px;
-    background-color: #1d1d1d; /* Fondo oscuro */
+
     color: #fff; /* Texto claro */
+
+
+      
+        background: rgba(46, 50, 57, 0.55) !important;
+        border: 1px solid #96babd56 !important;
+        backdrop-filter: blur(22.8077px) !important;
+
+        border-radius: 20px;
+        margin: 9px;
+        filter: drop-shadow(0px 3.53161px 3.53161px rgba(0, 0, 0, 0.301)) !important;
+
 }
 
 .operation-left-icon i {

@@ -18,7 +18,7 @@ $(document).ready(function() {
     }
 
     let isValid = true;
-
+    let barcodes = [];
     $('#addItem').on('click', function() {
         isValid = true;
         let modeloInput = $('#modelo');
@@ -115,9 +115,20 @@ $(document).ready(function() {
     
       
         handleEvent({ type: 'click' });
-        
+        console.log(barcodes)
+        console.log(barcodeInput.val())
         // Validar cada campo y mostrar mensajes de error si es necesario
-    
+        for (let i = 0; i < barcodes.length; i++) {
+            if (barcodes[i] === barcodeInput.val()) {
+                $('#barcode-error').text('Ya existe el código de barras');
+                barcodeInput.addClass('is-invalid');
+                isValid = false;
+                break;
+            }
+            else {
+                $('#barcode-error').text('No se encontró el ítem con el código de barras.'); // Limpiar el mensaje de error si el código de barras es diferente
+            }
+        }
         console.log(isValid)
         // Si todos los campos son válidos, agregar el ítem a la lista
         if (isValid) {
@@ -126,6 +137,8 @@ $(document).ready(function() {
             $('#units').prop('disabled', false);
             addItemToConfirmedList(item);
             $('#ingresoForm').trigger('reset');
+            barcodes.push(barcodeInput.val());
+            $('#barcode').val('');
         } 
     });
     
@@ -143,9 +156,9 @@ $(document).ready(function() {
         $('#states').val(item.estado);
         $('#stock_critico').val(item.stock_critico);
         $(this).closest('.confirmed-item').remove()
-          $('#userFormDiv').addClass('d-none');
-         $('#userFormDiv').addClass('animate__fadeInUp');
-         $('#scont').removeClass('d-none');
+        $('#userFormDiv').addClass('d-none');
+        $('#userFormDiv').addClass('animate__fadeInUp');
+        $('#scont').removeClass('d-none');
     });
     $(document).on('click', '.delete-item', function() {
         $(this).closest('.confirmed-item').remove();
@@ -536,9 +549,8 @@ $(document).ready(function() {
                     }
                 },
                 error: function(error) {
-                    $('#barcode').addClass('is-invalid');
                     isValid=true
-                    barcodeError.text('No se encontró el ítem con el código de barras.');
+    
                 }
             });
         } else {
@@ -780,8 +792,14 @@ for (let proceso_id in groupedData) {
                     <span class="operation-date">${operation.fecha_hora}</span>
                 </div>
             </div>
-            <div class="operation-right-icon">
-                <button class="print-receipt-btn">Boton
+            <div class="operation-right-icon row">
+                <a class="col"><svg width="35px" height="35px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87       868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z" fill="#94AFB0"/>
+                    </svg></a>
+
+                <a class="col"><svg width="35px" height="35px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 13.0001H21V19.0001C21 20.1047 20.1046 21.0001 19 21.0001M17 13.0001V19.0001C17 20.1047 17.8954 21.0001 19 21.0001M17 13.0001V5.75719C17 4.8518 17 4.3991 16.8098 4.13658C16.6439 3.90758 16.3888 3.75953 16.1076 3.72909C15.7853 3.6942 15.3923 3.9188 14.6062 4.368L14.2938 4.54649C14.0045 4.71183 13.8598 4.7945 13.7062 4.82687C13.5702 4.85551 13.4298 4.85551 13.2938 4.82687C13.1402 4.7945 12.9955 4.71183 12.7062 4.54649L10.7938 3.45372C10.5045 3.28838 10.3598 3.20571 10.2062 3.17334C10.0702 3.14469 9.92978 3.14469 9.79383 3.17334C9.64019 3.20571 9.49552 3.28838 9.20618 3.45372L7.29382 4.54649C7.00448 4.71183 6.85981 4.7945 6.70617 4.82687C6.57022 4.85551 6.42978 4.85551 6.29383 4.82687C6.14019 4.7945 5.99552 4.71183 5.70618 4.54649L5.39382 4.368C4.60772 3.9188 4.21467 3.6942 3.89237 3.72909C3.61123 3.75953 3.35611 3.90758 3.1902 4.13658C3 4.3991 3 4.8518 3 5.75719V16.2001C3 17.8803 3 18.7203 3.32698 19.3621C3.6146 19.9266 4.07354 20.3855 4.63803 20.6731C5.27976 21.0001 6.11984 21.0001 7.8 21.0001H19M7 13.0001H9M7 9.0001H13M7 17.0001H9M13 17.0001H13.01M13 13.0001H13.01" stroke="#94AFB0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg></a>
                 </button>
             </div>
         </div>
