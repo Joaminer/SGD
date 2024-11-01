@@ -70,8 +70,8 @@ def get_operations():
 
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+def historial():
+    return render_template('historial.html')
 
 @app.route('/api/search', methods=['GET'])
 def search():
