@@ -358,7 +358,7 @@ $(document).ready(function() {
                 });
                 let tipoConfig = $('#tipoConfig');
                 data.forEach(type => {
-                    tipoConfig.append(`<div class="valor d-flex justify-content mt-2"><p class="text-align-center me-2">${type}</p> <button class="btn btn-danger btn-sm">Eliminar</button></div>`);
+                    tipoConfig.append(`<div class="valor d-flex justify-content mt-2 flex-row"><p class="text-align-center me-2" contenteditable="true">${type}</p> <button class="btn btn-danger btn-sm">Eliminar</button></div>`);
                 });
             }
         });
@@ -932,7 +932,7 @@ for (let proceso_id in groupedData) {
 	c12.293,10.699,27.185,17.765,43.025,20.577v84.258c-86.772-7.791-155.289-79.949-157.307-168.237H395.47
 	c22.97,0,43.63-12.759,53.917-33.298C459.671,258.052,457.514,233.866,443.755,215.471z M421.509,264.629
 	c-5.043,10.069-14.777,16.081-26.04,16.081H116.53c-11.261,0-20.995-6.011-26.038-16.081c-5.043-10.07-4.027-21.466,2.72-30.484
-	L238.466,39.957c4.173-5.581,10.565-8.781,17.534-8.781c6.97,0,13.36,3.2,17.534,8.781l145.254,194.188
+	L238.466,39.957c4.173-5.581,10.565-8.781,17.534-8.78    1c6.97,0,13.36,3.2,17.534,8.781l145.254,194.188
 	C425.534,243.165,426.551,254.56,421.509,264.629z"/>
 </svg>`; // Reemplaza este ícono por tu SVG de "Retiro"
     }
@@ -962,6 +962,7 @@ for (let proceso_id in groupedData) {
         </div>
     `;
     container.append(operationHtml);
+    
 }
 
                     }

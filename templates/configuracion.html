@@ -6,17 +6,28 @@
 <!-- Contenido específico para la página de inicio/historial -->
 <div class="main-config row justify-content-center align-items-center">
 
-    <div class="col-2 align-items-center"> <a href=""> Valores Predefinidos</a></div>
-    <div class="col-9 ">
-        <div class="ubicacion" id="ubicacionConfig">
+     <div class="col"> <a href=""></a></div>
+    <div class="center-section ">
+        <div class="row">
+            <div class="ubicacion col-6" >
             <h3>Ubicación</h3>
-        </div>
+            <div id="ubicacionConfig" class="operation-item flex-column ">   </div>
+            
+            </div>
+        <div class="tipo col-6" ><h3>Tipo</h3> <div class="operation-item flex-column" id="tipoConfig"></div></div>
+        
+    </div>
+        
+    <div class="row">
     
-        <div class="tipo " id="tipoConfig"><h3>Tipo</h3></div>
-        <div class="estado " id="estadoConfig"><h3>Estado</h3></div>
-        <div class="unidades " id="unidadesConfig"><h3>Unidades</h3></div>
-        <div class="seccion " id="seccionConfig"><h3>Sección</h3></div>
-    </div>     
+        <div class="estado col" ><h3>Estado</h3><div class="operation-item flex-column" id="estadoConfig"></div></div>
+        <div class="unidades col " ><h3>Unidades</h3><div class="operation-item flex-column" id="unidadesConfig"></div></div>
+    </div>
+    <div class="seccion " ><h3>Sección</h3> <div class="operation-item flex-column" id="seccionConfig"></div></div>>
+    </div>
+    
+    
+     <div class="col"></div>   
 </div>
 <!-- Agrega otros modales o contenido específico aquí -->
 {% endblock %}
