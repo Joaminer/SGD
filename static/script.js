@@ -1,8 +1,13 @@
 
 $(document).ready(function() {
+
+    //-------------------------------
+    // Base.html
+    //-------------------------------
     let itemCount = 1;
 
     function addItemToConfirmedList(item) {
+        barcodeInput.removeClass('is-valid');
         let itemHtml = `
             <li class="list-group-item confirmed-item p-1 animate__animated animate__fadeInUp" data-tipo="${item.tipo}" data-ubicacion="${item.ubicacion}" data-estado="${item.estado}" data-stock_critico="${item.stock_critico}" data-unidad="${item.unidad}">
                 <div class="card-body">
@@ -16,9 +21,10 @@ $(document).ready(function() {
         $('#confirmed-items-container').append(itemHtml);
     }
 
-    
-    
+    let isValid = true;
+    let barcodes = [];
     $('#addItem').on('click', function() {
+        isValid = true;
         let modeloInput = $('#modelo');
         let tipoSelect = $('#types');
         let ubicacionInput = $('#locations');
@@ -28,7 +34,7 @@ $(document).ready(function() {
         let stockCriticoInput = $('#stock_critico');
         let barcodeInput = $('#barcode');
         let categoriaInput = $('#categoria');
-    
+        
         let item = {
             codigo_barras: barcodeInput.val(),
             categoria: categoriaInput.val(),
@@ -42,11 +48,12 @@ $(document).ready(function() {
         };
     
         // Validar todos los campos
-        let isValid = true;
+      
         if (!modeloInput.val()) {
             modeloInput.addClass('is-invalid');
             isValid = false;
         } else {
+            
             modeloInput.removeClass('is-invalid');
         }
     
@@ -54,6 +61,7 @@ $(document).ready(function() {
             tipoSelect.addClass('is-invalid');
             isValid = false;
         } else {
+            
             tipoSelect.removeClass('is-invalid');
         }
     
@@ -61,13 +69,26 @@ $(document).ready(function() {
             ubicacionInput.addClass('is-invalid');
             isValid = false;
         } else {
+            
             ubicacionInput.removeClass('is-invalid');
         }
-    
-        if (!cantidadInput.val()) {
+        
+        if (!cantidadInput.val() || cantidadInput.val() <= 0) {
+            $('#cantidad-error').text('Debe ser mayor 0');
             cantidadInput.addClass('is-invalid');
             isValid = false;
         } else {
+            
+            cantidadInput.removeClass('is-invalid');
+        }
+
+        if(actionType === 'retiro' && cantidadInput.val() > $('#basic-addon2').text()){ 
+            $('#cantidad-error').text('Debe ser menor al stock actual');
+            cantidadInput.addClass('is-invalid');
+            isValid = false;
+        }
+        else {
+            
             cantidadInput.removeClass('is-invalid');
         }
     
@@ -75,6 +96,7 @@ $(document).ready(function() {
             unidadSelect.addClass('is-invalid');
             isValid = false;
         } else {
+            
             unidadSelect.removeClass('is-invalid');
         }
     
@@ -82,40 +104,48 @@ $(document).ready(function() {
             estadoSelect.addClass('is-invalid');
             isValid = false;
         } else {
+            
             estadoSelect.removeClass('is-invalid');
         }
     
-        if (!stockCriticoInput.val()) {
+        if (!stockCriticoInput.val() || stockCriticoInput.val() < 0) {
+            $('#stock_critico-error').text('Debe ser mayor o igual a 0');
             stockCriticoInput.addClass('is-invalid');
             isValid = false;
         } else {
+            
             stockCriticoInput.removeClass('is-invalid');
         }
     
-        if (!barcodeInput.val()) {
-            barcodeInput.addClass('is-invalid');
-            isValid = false;
-        } else {
-            barcodeInput.removeClass('is-invalid');
-        }
-    
-        if (!categoriaInput.val()) {
-            categoriaInput.addClass('is-invalid');
-            isValid = false;
-        } else {
-            categoriaInput.removeClass('is-invalid');
-        }
+      
+        handleEvent({ type: 'click' });
+        console.log(barcodes)
+        console.log(barcodeInput.val())
         // Validar cada campo y mostrar mensajes de error si es necesario
-    
-    
+        for (let i = 0; i < barcodes.length; i++) {
+            if (barcodes[i] === barcodeInput.val()) {
+                $('#barcode-error').text('Ya existe el código de barras');
+                barcodeInput.addClass('is-invalid');
+                isValid = false;
+                break;
+            }
+            else {
+                $('#barcode-error').text('No se encontró el ítem con el código de barras.'); // Limpiar el mensaje de error si el código de barras es diferente
+            }
+        }
+        console.log(isValid)
         // Si todos los campos son válidos, agregar el ítem a la lista
         if (isValid) {
+            
             $('#types').prop('disabled', false)
             $('#units').prop('disabled', false);
             addItemToConfirmedList(item);
             $('#ingresoForm').trigger('reset');
+            barcodes.push(barcodeInput.val());
+            $('#barcode').val('');
         } 
     });
+    
     
     //Editar elimina y sobreescribe
     $(document).on('click', '.edit-item', function() {
@@ -130,46 +160,65 @@ $(document).ready(function() {
         $('#states').val(item.estado);
         $('#stock_critico').val(item.stock_critico);
         $(this).closest('.confirmed-item').remove()
+        $('#userFormDiv').addClass('d-none');
+        $('#userFormDiv').addClass('animate__fadeInUp');
+        $('#scont').removeClass('d-none');
     });
     $(document).on('click', '.delete-item', function() {
         $(this).closest('.confirmed-item').remove();
     });
+
     function fetchAndDisplayMaterials(query = '') {
         $.ajax({
             url: '/api/search',
             method: 'GET',  
             data: { query: query },
-
+    
             success: function(data) {
                 let resultsContainer = $('#search-results');
                 resultsContainer.empty();
-                data.forEach(item => {
+                
+                if (data.length === 0) {
+                    // Mostrar mensaje cuando no hay resultados
                     resultsContainer.append(`
-                        <div class="search-result-card" data-item='${JSON.stringify(item)}'>
-                            <p>${item.categoria} - ${item.modelo}</p>
+                        <div >
+                            <p>No se encontraron resultados</p>
                         </div>
                     `);
-                });
-                $('.search-result-card').on('click', function() {
-                    let item = $(this).data('item');
-                    
-                    $('#categoria').val(item.categoria).prop('disabled', false);
-                    $('#modelo').val(item.modelo).prop('disabled', false);
-                    $('#types').val(item.tipo).prop('disabled', true);
-                    $('#locations').val(item.ubicacion).prop('disabled', false);
-                    $('#units').val(item.unidad).prop('disabled', true);
-                    $('#states').val(item.estado).prop('disabled', false);
-                    $('#stock_critico').val(item.stock_critico).prop('disabled', false);
-                    $('#search-results-container').hide();
-                    
-                });
+                  
+                } else {
+                    // Si hay resultados, mostrarlos
+                    data.forEach(item => {
+                        resultsContainer.append(`
+                            <div class="search-result-card" data-item='${JSON.stringify(item)}'>
+                                <p>${item.categoria} - ${item.modelo}</p>
+                            </div>
+                        `);
+                    });
+    
+                    // Manejar el click en los resultados
+                    $('.search-result-card').on('click', function() {
+                        let item = $(this).data('item');
+                        
+                        $('#categoria').val(item.categoria).prop('disabled', false);
+                        $('#modelo').val(item.modelo).prop('disabled', false);
+                        $('#types').val(item.tipo).prop('disabled', true);
+                        $('#locations').val(item.ubicacion).prop('disabled', false);
+                        $('#units').val(item.unidad).prop('disabled', true);
+                        $('#states').val(item.estado).prop('disabled', false);
+                        $('#stock_critico').val(item.stock_critico).prop('disabled', false);
+                        $('#search-results-container').hide();
+                        updateStocks();
+                        
+                    });
+                }
             },
             error: function(error) {
                 console.error('Error fetching materials:', error);
             }
         });
     }
-    //redundante
+    
     $('.search-result-card, #barcode').on('click', function() {
         let item = $(this).data('item'); // Asegúrate de que este "item" tiene la categoría y modelo correctos.
         let category = item.categoria;
@@ -177,13 +226,78 @@ $(document).ready(function() {
         $('#categoria').val(category);
         updateModels(category); // Actualiza el datalist de modelos según la categoría autocompletada
     });
-    //  redundante
-    $('#modelo').on('input', function() {
+  
+    $('#modelo').on('input', updateStocks);
+    $('#categoria').on('input', updateStocks);
+    function updateStocks() {
+        let query = $('#modelo').val();
         let category = $('#categoria').val(); // Obtener la categoría actual
-        if (category) {
-            updateModels(category); // Reestablecer el datalist de modelos según la categoría
+        if (query) {
+            updateModels(category);
+            $.ajax({
+                url: '/api/cantidad_modelo',
+                method: 'GET',  
+                data: { query: query },
+        
+                success: function(data) {
+                    let stock = $('#basic-addon2');
+                    console.log(data[0][0])
+                    stock.text(data[0][0]);
+                },
+                error: function(error) {
+                    console.error('Error fetching materials:', error);
+                }
+            });
         }
-    });
+        else {
+            $('#basic-addon2').text("Stock");
+        }
+
+        
+        updateModels(category);
+        // updateUnits(category);
+        
+            
+            if (category) {
+                $.ajax({
+                    url: '/api/category_details',
+                    method: 'GET',
+                    data: { category: category },
+                    success: function(response) {
+                        if (response.tipo) {
+                            $('select[name="tipo"]').val(response.tipo).prop('disabled', true);
+                        } else {
+                            $('select[name="tipo"]').val('').prop('disabled', false);
+                        }
+                        
+                        if (response.stock_critico) {
+                            $('input[name="stock_critico"]').val(response.stock_critico);
+                        } else {
+                            $('input[name="stock_critico"]').val('').prop('disabled', false);
+                        }
+                            
+                        if (response.unidad) {
+                            $('select[name="unidad"]').val(response.unidad).prop('disabled', true);
+                        } else {
+                            $('select[name="unidad"]').val('').prop('disabled', false);
+                        }
+
+                        if (response.total) {
+                            $('#category-error').text('Total: ' + response.total).addClass('d-block').removeClass('d-none');
+                        } else {
+                            $('#category-error').text('').removeClass('d-block').addClass('d-none').removeClass('d-block');
+                        }
+                        },
+                    error: function(error) {
+                        console.error('Error fetching category details:', error);
+                    }
+                });
+            }
+            else{
+                $('#category-error').text('').removeClass('d-block').addClass('d-none').removeClass('d-block');
+            }
+        console.log(category);
+    }
     function updateModels(category) {
         $.ajax({
             url: '/api/models',
@@ -222,14 +336,18 @@ $(document).ready(function() {
     }
     function updateDatalists() {
         // Actualiza categorías, tipos, ubicaciones, unidades y estados
-        $.get('/api/categories', function(data) {
-            let categoriesDatalist = $('#categories');
-            categoriesDatalist.empty();
-            data.forEach(category => {
-                categoriesDatalist.append(`<option value="${category}">`);
-            });
-        });
-
+ 
+        $.ajax({
+            url: '/api/categories',
+            method: 'GET',
+            success: function(data) {
+                let categoriesDatalist = $('#categories');
+                categoriesDatalist.empty();
+                data.forEach(category => {
+                    categoriesDatalist.append(`<option value="${category}">${category}</option>`);
+                });
+            }
+        })
         $.ajax({
             url: '/api/types',
             method: 'GET',
@@ -237,6 +355,10 @@ $(document).ready(function() {
                 let typesDatalist = $('#types');
                 data.forEach(type => {
                     typesDatalist.append(`<option value="${type}">${type}</option>`);
+                });
+                let tipoConfig = $('#tipoConfig');
+                data.forEach(type => {
+                    tipoConfig.append(`<div class="valor d-flex justify-content mt-2 flex-row"><p class="text-align-center me-2" contenteditable="true">${type}</p> <button class="btn btn-danger btn-sm">Eliminar</button></div>`);
                 });
             }
         });
@@ -251,7 +373,12 @@ $(document).ready(function() {
                 data.forEach(location => {
                     locationsDatalist.append(`<option value="${location}">${location}</option>`);
                 });
-            }
+                let ubicacionConfig = $('#ubicacionConfig');
+                // locationsDatalist.empty();
+                data.forEach(location => {
+                    ubicacionConfig.append(`<p>${location}</p>`);
+                });
+            }       
         });
         $.ajax({
             url: '/api/sections',
@@ -259,8 +386,15 @@ $(document).ready(function() {
             success: function(data) {
                 let sectionsDatalist = $('#seccion');
                 // locationsDatalist.empty();
+                console.log(data);
                 data.forEach(section => {
                     sectionsDatalist.append(`<option value="${section}">${section}</option>`);
+                });
+                let seccionConfig = $('#seccionConfig');
+                // locationsDatalist.empty();
+              
+                data.forEach(section => {
+                    seccionConfig.append(`<div class="valor d-flex justify-content mt-2"><p class="text-align-center me-2">${section}</p> <button class="btn btn-danger btn-sm">Eliminar</button></div>`);
                 });
             }
         });
@@ -274,6 +408,11 @@ $(document).ready(function() {
                 data.forEach(unit => {
                     unitsDatalist.append(`<option value="${unit}">${unit}</option>`);
                 });
+                let unidadesConfig = $('#unidadesConfig');
+
+                data.forEach(unit => {
+                    unidadesConfig.append(`<p>${unit}</p>`);
+                });
             }
         });
         $.ajax({
@@ -284,6 +423,11 @@ $(document).ready(function() {
 
                 data.forEach(states => {
                     statesDatalist.append(`<option value="${states}">${states}</option>`);
+                });
+                let estadoConfig = $('#estadoConfig');
+
+                data.forEach(states => {
+                    estadoConfig.append(`<p>${states}</p>`);
                 });
             }
         });
@@ -303,43 +447,13 @@ $(document).ready(function() {
             activeInput = null;
         }
     });
-    document.addEventListener('DOMContentLoaded', () => {
 
-       
-        const barcodeInputTimeout = 200; // Tiempo en milisegundos para detectar escaneo rápido
-        barcodeInput.focus();
-
-        // Puedes agregar una función para enfocar el campo cuando se muestre el formulario
-        $('#ingresoForm').on('show.bs.collapse', function() {
-            barcodeInput.focus();
-        });
-        // Detectar entrada de código de barras
-        document.addEventListener('keydown', (event) => {
-            // Puedes ajustar esto según el comportamiento de tu escáner
-            // Asumimos que el escáner envía el código de barras seguido por Enter
-            if (event.key.length === 1) { // Solo caracteres
-                barcodeBuffer += event.key;
-            } else if (event.key === 'Enter') {
-                // Cuando se detecta Enter, asumimos que se ha escaneado un código de barras
-                if (barcodeBuffer) {
-                    barcodeInput.val(barcodeBuffer); // Inserta el código de barras en el campo
-                    barcodeBuffer = ''; // Limpia el buffer de código de barras
     
-                    // Limpia el campo activo si es necesario
-                    if (activeInput && activeInput.attr('id') !== 'barcode') {
-                        activeInput.val('');
-                    }
-    
-                    event.preventDefault(); // Evita el comportamiento por defecto del Enter
-                }
-            }
-        });
-    
-    });
     
     
     $('#search').on('input', function() {
         let query = $(this).val();
+        console.log(query);
         if (query) {
             $('#search-results-container').show();
             fetchAndDisplayMaterials(query);
@@ -348,39 +462,78 @@ $(document).ready(function() {
         }
     });
     
-    $('#barcode').on('input', function() {
-        let barcode = $(this).val().trim();
-        if (barcode.length === 12) { // Assuming the barcode length is 12
+    $('#barcode').on('input', handleEvent);
+    $('#generate-code').on('click', function() {
+        let inputField = $('#barcode');
+        
+        // Genera el código primero
+        $.ajax({
+            url: '/api/generate_code',
+            method: 'GET',
+            success: function(data) {
+                inputField.val(data.code); // Actualiza el valor del input con el código generado
+                // Después de actualizar el valor, llama a handleEvent para manejar la validación
+                handleEvent({ type: 'click' });
+            },
+            error: function(error) {
+                console.error('Error generating code:', error);
+            }
+        });
+    });
+    
+    function handleEvent(event) {
+        let barcode;
+        let barcodeError = $('#barcode-error');
+        
+        // Obtener el valor del input al activar el evento correspondiente
+        if (event.type === 'input') {
+            barcode = $(this).val().trim();
+        } else if (event.type === 'click') {
+            barcode = $('#barcode').val().trim();
+        }
+        
+        console.log(barcode);
+        console.log(barcode.length);
+        
+        if (barcode.length === 12) {
             $.ajax({
                 url: '/api/item_by_barcode',
                 method: 'GET',
                 data: { barcode: barcode },
+    
                 success: function(response) {
                     if (response.success) {
                         let item = response.item;
                         $('#categoria').val(item.categoria).prop('disabled', false);
                         $('#modelo').val(item.modelo).prop('disabled', false);
-                        $('#types').val(item.tipo).prop('disabled', false);
+                        $('#types').val(item.tipo).prop('disabled', true);
                         $('#locations').val(item.ubicacion).prop('disabled', false);
                         $('#units').val(item.unidad).prop('disabled', true);
                         $('#states').val(item.estado).prop('disabled', false);
                         $('#stock_critico').val(item.stock_critico).prop('disabled', false);
-                        $('#flush-collapseOne').collapse('hide'); // Close the accordion
+                        $('#barcode').removeClass('is-invalid').addClass('is-valid');
+                        barcodeError.text('');
                         updateUnits(item.categoria);
+                        updateStocks();
+                        isValid = true
                         if (activeInput && activeInput.attr('id') !== 'barcode') {
                             activeInput.val('');
                         }
-                    } else {
-                        $('#notificationMessage').text('No se encontró el ítem con el código de barras proporcionado.');
-                        $('#notificationModal').modal('show');
                     }
                 },
                 error: function(error) {
-                    console.error('Error al buscar el ítem por código de barras:', error);
+                    isValid=true
+    
                 }
             });
+        } else {
+            $('#barcode').addClass('is-invalid');
+            isValid=false
+            barcodeError.text('El código de barras debe tener 12 dígitos.');
         }
-    });
+    }
+    
+    
 
     $(document).on('click', function(event) {
         if (!$(event.target).closest('.search-container').length) {
@@ -388,60 +541,11 @@ $(document).ready(function() {
         }
     });
 
-    $('#categoria').on('input', function() {
-        let category = $(this).val();
-        
-        updateModels(category);
-        // updateUnits(category);
-        
-            
-            if (category) {
-                $.ajax({
-                    url: '/api/category_details',
-                    method: 'GET',
-                    data: { category: category },
-                    success: function(response) {
-                        if (response.tipo) {
-                            $('select[name="tipo"]').val(response.tipo).prop('disabled', true);
-                        } else {
-                            $('select[name="tipo"]').val('').prop('disabled', false);
-                        }
-                        
-                        if (response.stock_critico) {
-                            $('input[name="stock_critico"]').val(response.stock_critico);
-                        } else {
-                            $('input[name="stock_critico"]').val('').prop('disabled', false);
-                        }
-                        
-                        if (response.unidad) {
-                            $('select[name="unidad"]').val(response.unidad).prop('disabled', true);
-                        } else {
-                            $('select[name="unidad"]').val('').prop('disabled', false);
-                        }
-                    },
-                    error: function(error) {
-                        console.error('Error fetching category details:', error);
-                    }
-                });
-            }
-        
-        console.log(category);
-    });
+    
 
-    $('#generate-code').on('click', function() {
-        let inputField = $('#barcode');
-        console.log(actionType);
-        $.ajax({
-            url: '/api/generate_code',
-            method: 'GET',
-            success: function(data) {
-                inputField.val(data.code);
-            },
-            error: function(error) {
-                console.error('Error generating code:', error);
-            }
-        });
-    });
+    
+        
+  
 
     let actionType = ' ';
     function setAction(action) {
@@ -463,6 +567,7 @@ $(document).ready(function() {
 	C425.534,243.165,426.551,254.56,421.509,264.629z"/>
 </svg> Ingresar Item`);
             actionType = 'ingreso';
+            $('#content-modal').removeClass('border-retirar').addClass('border-ingresar');
         } else if (action === 'retiro') {
             $('#ModalLabel').empty();
             $('#ModalLabel').append(`<svg height="40px" width="40px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -481,6 +586,7 @@ $(document).ready(function() {
 </svg>  
                             Retirar Item`);
             actionType = 'retiro';
+            $('#content-modal').removeClass('border-ingresar').addClass('border-retirar');
         }
     }
     
@@ -506,7 +612,7 @@ $(document).ready(function() {
     let items = [];
     $('#confirmItems').on('click', function(event) {
         event.preventDefault();
-    
+        updateStocks();
         items = []; // Reinicia la variable items
     
         $('#confirmed-items-container .confirmed-item').each(function() {
@@ -539,148 +645,13 @@ $(document).ready(function() {
         $('#userFormDiv').removeClass('d-none');
         $('#userFormDiv').removeClass('animate__fadeInUp');
     });
-    
-    updateOperations();
-    function updateOperations() {
-        $.ajax({
-            url: '/api/get_operations',
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                const container = $('#operationContainer');
-                container.empty(); // Limpiar contenido previo
-        
-                // Crear estructuras para agrupar por fecha
-                const todayOperations = [];
-                const yesterdayOperations = [];
-                const last7DaysOperations = [];
-        
-                const today = new Date();
-                const yesterday = new Date(today);
-                yesterday.setDate(yesterday.getDate() - 1);
-        
-                data.forEach(function(row) {
-                    const operationDate = new Date(row.fecha_hora);
-                    const operationDay = new Date(operationDate.getFullYear(), operationDate.getMonth(), operationDate.getDate());
-        
-                    if (operationDay.getTime() === new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) {
-                        todayOperations.push(row);
-                    } else if (operationDay.getTime() === new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate()).getTime()) {
-                        yesterdayOperations.push(row);
-                    } else if (operationDay.getTime() >= new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7).getTime()) {
-                        last7DaysOperations.push(row);
-                    }
-                });
-        
-                function renderOperations(operations, sectionTitle) {
-                    if (operations.length > 0) {
-                        container.append(`<h3>${sectionTitle}</h3>`);
-        
-                        // Crear un objeto para agrupar por proceso_id
-                        const groupedData = {};
-        
-                        operations.forEach(function(row) {
-                            if (!groupedData[row.proceso_id]) {
-                                groupedData[row.proceso_id] = {
-                                    fecha_hora: row.fecha_hora,
-                                    usuario: row.usuario,
-                                    operacion: row.operacion,
-                                    items: []
-                                };
-                            }
-                            groupedData[row.proceso_id].items.push({
-                                modelo: row.items,
-                                categoria: row.categoria
-                            });
-                        });
-        
-                        // Ahora iteramos sobre los grupos y los mostramos en el HTML
-                        // Ahora iteramos sobre los grupos y los mostramos en el HTML
-for (let proceso_id in groupedData) {
-    const operation = groupedData[proceso_id];
-    let itemsHtml = '';
 
-    operation.items.forEach(function(item) {
-        itemsHtml += `
-            <div>
-                <span class="item-category">${item.categoria}</span> - 
-                <span class="items">${item.modelo}</span>
-            </div>
-        `;
-    });
 
-    // Aquí es donde decides qué SVG mostrar según el tipo de operación
-    let operationIconHtml = '';
-    if (operation.operacion === 'Ingreso') {
-        operationIconHtml = `<svg class="rotate-svg" height="40px" width="40px"  version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-                                 viewBox="0 0 512 512" xml:space="preserve">
-                            <path style="fill:rgba(36, 38, 45, 0.938);" d="M395.47,296.3H116.531c-36.816,0-57.855-42.009-35.803-71.491L225.983,30.621
-                                c14.993-20.043,45.041-20.043,60.034,0l145.254,194.188C453.325,254.291,432.286,296.3,395.47,296.3z"/>
-                            <path style="fill:#94b09d;" d="M443.755,215.471L298.501,21.284C288.382,7.759,272.893,0,256.001,0s-32.383,7.759-42.5,21.284
-                                L68.245,215.471c-13.759,18.393-15.916,42.579-5.631,63.119c10.286,20.54,30.946,33.298,53.916,33.298h66.552
-                                C185.227,422.598,275.94,512,387.153,512c8.608,0,15.589-6.979,15.589-15.589V381.652c0-8.61-6.981-15.589-15.589-15.589
-                                c-14.01,0-27.556-5.074-38.144-14.29c-6.494-5.651-16.339-4.971-21.993,1.525c-5.653,6.494-4.97,16.34,1.525,21.993
-                                c12.293,10.699,27.185,17.765,43.025,20.577v84.258c-86.772-7.791-155.289-79.949-157.307-168.237H395.47
-                                c22.97,0,43.63-12.759,53.917-33.298C459.671,258.052,457.514,233.866,443.755,215.471z M421.509,264.629
-                                c-5.043,10.069-14.777,16.081-26.04,16.081H116.53c-11.261,0-20.995-6.011-26.038-16.081c-5.043-10.07-4.027-21.466,2.72-30.484
-                                L238.466,39.957c4.173-5.581,10.565-8.781,17.534-8.781c6.97,0,13.36,3.2,17.534,8.781l145.254,194.188
-                                C425.534,243.165,426.551,254.56,421.509,264.629z"/>
-                            </svg>`; // Reemplaza este ícono por tu SVG de "Ingreso"
-    } else if (operation.operacion === 'Retiro') {
-        operationIconHtml = `<?xml version="1.0" encoding="iso-8859-1"?>
-<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg height="40px" width="40px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-	 viewBox="0 0 512 512" xml:space="preserve">
-<path style="fill:rgba(36, 38, 45, 0.69);" d="M395.47,296.3H116.531c-36.816,0-57.855-42.009-35.803-71.491L225.983,30.621
-	c14.993-20.043,45.041-20.043,60.034,0l145.254,194.188C453.325,254.291,432.286,296.3,395.47,296.3z"/>
-<path style="fill:#b0949a;" d="M443.755,215.471L298.501,21.284C288.382,7.759,272.893,0,256.001,0s-32.383,7.759-42.5,21.284
-	L68.245,215.471c-13.759,18.393-15.916,42.579-5.631,63.119c10.286,20.54,30.946,33.298,53.916,33.298h66.552
-	C185.227,422.598,275.94,512,387.153,512c8.608,0,15.589-6.979,15.589-15.589V381.652c0-8.61-6.981-15.589-15.589-15.589
-	c-14.01,0-27.556-5.074-38.144-14.29c-6.494-5.651-16.339-4.971-21.993,1.525c-5.653,6.494-4.97,16.34,1.525,21.993
-	c12.293,10.699,27.185,17.765,43.025,20.577v84.258c-86.772-7.791-155.289-79.949-157.307-168.237H395.47
-	c22.97,0,43.63-12.759,53.917-33.298C459.671,258.052,457.514,233.866,443.755,215.471z M421.509,264.629
-	c-5.043,10.069-14.777,16.081-26.04,16.081H116.53c-11.261,0-20.995-6.011-26.038-16.081c-5.043-10.07-4.027-21.466,2.72-30.484
-	L238.466,39.957c4.173-5.581,10.565-8.781,17.534-8.781c6.97,0,13.36,3.2,17.534,8.781l145.254,194.188
-	C425.534,243.165,426.551,254.56,421.509,264.629z"/>
-</svg>`; // Reemplaza este ícono por tu SVG de "Retiro"
-    }
 
-    const operationHtml = `
-        <div class="operation-item">
-            <div class="operation-left-icon">
-                ${operationIconHtml} <!-- Aquí se inserta el ícono correspondiente -->
-            </div>
-            <div class="operation-details">
-                ${itemsHtml}
-                <div class="operation-user-date">
-                    <span class="user-name">${operation.usuario}</span>
-                    <span class="operation-date">${operation.fecha_hora}</span>
-                </div>
-            </div>
-            <div class="operation-right-icon">
-                <button class="print-receipt-btn">Boton
-                </button>
-            </div>
-        </div>
-    `;
 
-    container.append(operationHtml);
-}
 
-                    }
-                }
-        
-                renderOperations(todayOperations, 'Hoy');
-                renderOperations(yesterdayOperations, 'Ayer');
-                renderOperations(last7DaysOperations, 'Últimos 7 días');
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching operations:', error);
-            }
-        });
-        
-    
-    }
+
+
 
     function insert(isValid,user){
         if (isValid) {
@@ -793,31 +764,12 @@ for (let proceso_id in groupedData) {
             modstyle(isValid, user);
         }
     });
-    
 
-
-
-
-
-
-
-    // document.querySelectorAll('.procesos a').forEach(button => {
-    //     button.addEventListener('mouseenter', function() {
-    //         const sibling = this.nextElementSibling || this.previousElementSibling;
-    //         if (sibling) sibling.style.display = 'none';
-    //     });
-        
-    //     button.addEventListener('mouseleave', function() {
-    //         const sibling = this.nextElementSibling || this.previousElementSibling;
-    //         if (sibling) sibling.style.display = 'flex';
-    //     });
-    // });
-
-
-
-
-
-
+    $('#backToItemsForm').on('click', function() {
+        $('#userFormDiv').addClass('d-none');
+        $('#userFormDiv').addClass('animate__fadeInUp');
+        $('#scont').removeClass('d-none');
+    });
     $('#backToItemsForm').on('click', function() {
         $('#userFormDiv').addClass('d-none');
         $('#userFormDiv').addClass('animate__fadeInUp');
@@ -875,3 +827,163 @@ for (let proceso_id in groupedData) {
         }
     });
 });
+    //----------------------
+    // Historial
+    //----------------------
+    updateOperations();
+    function updateOperations() {
+        $.ajax({
+            url: '/api/get_operations',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                const container = $('#operationContainer');
+                container.empty(); // Limpiar contenido previo
+        
+                // Crear estructuras para agrupar por fecha
+                const todayOperations = [];
+                const yesterdayOperations = [];
+                const last7DaysOperations = [];
+        
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+        
+                data.forEach(function(row) {
+                    const operationDate = new Date(row.fecha_hora);
+                    const operationDay = new Date(operationDate.getFullYear(), operationDate.getMonth(), operationDate.getDate());
+        
+                    if (operationDay.getTime() === new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime()) {
+                        todayOperations.push(row);
+                    } else if (operationDay.getTime() === new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate()).getTime()) {
+                        yesterdayOperations.push(row);
+                    } else if (operationDay.getTime() >= new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7).getTime()) {
+                        last7DaysOperations.push(row);
+                    }
+                });
+        
+                function renderOperations(operations, sectionTitle) {
+                    if (operations.length > 0) {
+                        container.append(`<h3>${sectionTitle}</h3>`);
+        
+                        // Crear un objeto para agrupar por proceso_id
+                        const groupedData = {};
+            
+                            operations.forEach(function(row) {
+                            if (!groupedData[row.proceso_id]) {
+                                groupedData[row.proceso_id] = {
+                                    fecha_hora: row.fecha_hora,
+                                    usuario: row.usuario,
+                                    operacion: row.operacion,
+                                    items: []
+                                };
+                            }
+                            groupedData[row.proceso_id].items.push({
+                                modelo: row.items,
+                                categoria: row.categoria
+                            });
+                        });
+        
+                        // Ahora iteramos sobre los grupos y los mostramos en el HTML
+                        // Ahora iteramos sobre los grupos y los mostramos en el HTML
+for (let proceso_id in groupedData) {       
+    const operation = groupedData[proceso_id];
+    let itemsHtml = '';
+
+    operation.items.forEach(function(item) {
+        itemsHtml += `
+            <div>
+                <span class="item-category">${item.categoria}</span> - 
+                <span class="items">${item.modelo}</span>
+            </div>
+        `;
+    });
+
+    // Aquí es donde decides qué SVG mostrar según el tipo de operación
+    let operationIconHtml = '';
+    if (operation.operacion === 'Ingreso') {
+
+        operationIconHtml = `<svg class="rotate-svg" height="40px" width="40px"  version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                                 viewBox="0 0 512 512" xml:space="preserve">
+                            <path style="fill:rgba(36, 38, 45, 0.938);" d="M395.47,296.3H116.531c-36.816,0-57.855-42.009-35.803-71.491L225.983,30.621
+                                c14.993-20.043,45.041-20.043,60.034,0l145.254,194.188C453.325,254.291,432.286,296.3,395.47,296.3z"/>
+                            <path style="fill:#94b09d;" d="M443.755,215.471L298.501,21.284C288.382,7.759,272.893,0,256.001,0s-32.383,7.759-42.5,21.284
+                                L68.245,215.471c-13.759,18.393-15.916,42.579-5.631,63.119c10.286,20.54,30.946,33.298,53.916,33.298h66.552
+                                C185.227,422.598,275.94,512,387.153,512c8.608,0,15.589-6.979,15.589-15.589V381.652c0-8.61-6.981-15.589-15.589-15.589
+                                c-14.01,0-27.556-5.074-38.144-14.29c-6.494-5.651-16.339-4.971-21.993,1.525c-5.653,6.494-4.97,16.34,1.525,21.993
+                                c12.293,10.699,27.185,17.765,43.025,20.577v84.258c-86.772-7.791-155.289-79.949-157.307-168.237H395.47
+                                c22.97,0,43.63-12.759,53.917-33.298C459.671,258.052,457.514,233.866,443.755,215.471z M421.509,264.629
+                                c-5.043,10.069-14.777,16.081-26.04,16.081H116.53c-11.261,0-20.995-6.011-26.038-16.081c-5.043-10.07-4.027-21.466,2.72-30.484
+                                L238.466,39.957c4.173-5.581,10.565-8.781,17.534-8.781c6.97,0,13.36,3.2,17.534,8.781l145.254,194.188
+                                C425.534,243.165,426.551,254.56,421.509,264.629z"/>
+                            </svg>`; // Reemplaza este ícono por tu SVG de "Ingreso"
+    } else if (operation.operacion === 'Retiro') {
+   
+        operationIconHtml = `<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg height="40px" width="40px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 512 512" xml:space="preserve">
+<path style="fill:rgba(36, 38, 45, 0.69);" d="M395.47,296.3H116.531c-36.816,0-57.855-42.009-35.803-71.491L225.983,30.621
+	c14.993-20.043,45.041-20.043,60.034,0l145.254,194.188C453.325,254.291,432.286,296.3,395.47,296.3z"/>
+<path style="fill:#b0949a;" d="M443.755,215.471L298.501,21.284C288.382,7.759,272.893,0,256.001,0s-32.383,7.759-42.5,21.284
+	L68.245,215.471c-13.759,18.393-15.916,42.579-5.631,63.119c10.286,20.54,30.946,33.298,53.916,33.298h66.552
+	C185.227,422.598,275.94,512,387.153,512c8.608,0,15.589-6.979,15.589-15.589V381.652c0-8.61-6.981-15.589-15.589-15.589
+	c-14.01,0-27.556-5.074-38.144-14.29c-6.494-5.651-16.339-4.971-21.993,1.525c-5.653,6.494-4.97,16.34,1.525,21.993
+	c12.293,10.699,27.185,17.765,43.025,20.577v84.258c-86.772-7.791-155.289-79.949-157.307-168.237H395.47
+	c22.97,0,43.63-12.759,53.917-33.298C459.671,258.052,457.514,233.866,443.755,215.471z M421.509,264.629
+	c-5.043,10.069-14.777,16.081-26.04,16.081H116.53c-11.261,0-20.995-6.011-26.038-16.081c-5.043-10.07-4.027-21.466,2.72-30.484
+	L238.466,39.957c4.173-5.581,10.565-8.781,17.534-8.78    1c6.97,0,13.36,3.2,17.534,8.781l145.254,194.188
+	C425.534,243.165,426.551,254.56,421.509,264.629z"/>
+</svg>`; // Reemplaza este ícono por tu SVG de "Retiro"
+    }
+
+    const operationHtml = `
+        <div class="operation-item">
+            <div class="operation-left-icon">
+                ${operationIconHtml} <!-- Aquí se inserta el ícono correspondiente -->
+            </div>
+            <div class="operation-details">
+                ${itemsHtml}
+                <div class="operation-user-date">
+                    <span class="user-name">${operation.usuario} | </span>
+                    <span class="operation-date">${operation.fecha_hora}</span>
+                </div>
+            </div>
+            <div class="operation-right-icon row">
+                <a class="col" href="#"><svg width="35px" height="35px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87       868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z" fill="#94AFB0"/>
+                    </svg></a>
+
+                <a class="col"  href="#"><svg width="35px" height="35px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 13.0001H21V19.0001C21 20.1047 20.1046 21.0001 19 21.0001M17 13.0001V19.0001C17 20.1047 17.8954 21.0001 19 21.0001M17 13.0001V5.75719C17 4.8518 17 4.3991 16.8098 4.13658C16.6439 3.90758 16.3888 3.75953 16.1076 3.72909C15.7853 3.6942 15.3923 3.9188 14.6062 4.368L14.2938 4.54649C14.0045 4.71183 13.8598 4.7945 13.7062 4.82687C13.5702 4.85551 13.4298 4.85551 13.2938 4.82687C13.1402 4.7945 12.9955 4.71183 12.7062 4.54649L10.7938 3.45372C10.5045 3.28838 10.3598 3.20571 10.2062 3.17334C10.0702 3.14469 9.92978 3.14469 9.79383 3.17334C9.64019 3.20571 9.49552 3.28838 9.20618 3.45372L7.29382 4.54649C7.00448 4.71183 6.85981 4.7945 6.70617 4.82687C6.57022 4.85551 6.42978 4.85551 6.29383 4.82687C6.14019 4.7945 5.99552 4.71183 5.70618 4.54649L5.39382 4.368C4.60772 3.9188 4.21467 3.6942 3.89237 3.72909C3.61123 3.75953 3.35611 3.90758 3.1902 4.13658C3 4.3991 3 4.8518 3 5.75719V16.2001C3 17.8803 3 18.7203 3.32698 19.3621C3.6146 19.9266 4.07354 20.3855 4.63803 20.6731C5.27976 21.0001 6.11984 21.0001 7.8 21.0001H19M7 13.0001H9M7 9.0001H13M7 17.0001H9M13 17.0001H13.01M13 13.0001H13.01" stroke="#94AFB0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg></a>
+                </button>
+            </div>
+        </div>
+    `;
+    container.append(operationHtml);
+    
+}
+
+                    }
+                }
+        
+                renderOperations(todayOperations, 'Hoy');
+                renderOperations(yesterdayOperations, 'Ayer');
+                renderOperations(last7DaysOperations, 'Últimos 7 días');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching operations:', error);
+            }
+        });
+        
+    
+    }
+
+
+
+
+
+
+
+   
