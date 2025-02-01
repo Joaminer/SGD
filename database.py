@@ -220,7 +220,8 @@ unidades_data = [
     ('Unidades',),
     ('Metros',),
     ('Piezas',),
-    ('Mililitros',)
+    ('Mililitros',),
+    ('Tubos',),
 ]
 
 tipos_data = [
@@ -273,7 +274,7 @@ def init_db():
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS items (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                codigo_barras TEXT UNIQUE,
+                codigo_barras TEXT,
                 modelo TEXT,
                 ubicacion TEXT,
                 cantidad INTEGER,
@@ -321,55 +322,48 @@ def init_db():
 
 
         cursor.execute('''
-            CREATE TABLE IF NOT EXISTS valores_defecto (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                seccion TEXT,
-                tipo TEXT,
-                unidad TEXT,
-                estado TEXT,
-                ubicacion TEXT,
-                ubicacion_usuario TEXT
+        CREATE TABLE IF NOT EXISTS valores_defecto (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        apartado TEXT,
+        valor TEXT
             )
         ''')
+
+        # Insertar ubicaciones de usuario
         
-        for ubicacion in ubicaciones_usuarios_data:
+        for ubicacion_usuario in ubicaciones_usuarios_data:
             cursor.execute('''
-                INSERT OR IGNORE INTO valores_defecto (ubicacion_usuario) 
-                VALUES (?)
-            ''', ubicacion)
-            
+                INSERT OR IGNORE INTO valores_defecto (apartado, valor) 
+                VALUES (?, ?)
+            ''', ('ubicacion_usuario', ubicacion_usuario[0]))
+
+        # Insertar unidades
         for unidad in unidades_data:
             cursor.execute('''
-                INSERT OR IGNORE INTO valores_defecto (unidad) 
-                VALUES (?)
-            ''', unidad)
+                INSERT OR IGNORE INTO valores_defecto (apartado, valor) 
+                VALUES (?, ?)
+            ''', ('unidad', unidad[0]))
 
-        # Insertar tipo
+        # Insertar tipos
         for tipo in tipos_data:
             cursor.execute('''
-                INSERT OR IGNORE INTO valores_defecto (tipo) 
-                VALUES (?)
-            ''', tipo)
+                INSERT OR IGNORE INTO valores_defecto (apartado, valor) 
+                VALUES (?, ?)
+            ''', ('tipo', tipo[0]))
 
         # Insertar estados
         for estado in estados_data:
             cursor.execute('''
-                INSERT OR IGNORE INTO valores_defecto (estado) 
-                VALUES (?)
-            ''', estado)
+                INSERT OR IGNORE INTO valores_defecto (apartado, valor) 
+                VALUES (?, ?)
+            ''', ('estado', estado[0]))
 
         # Insertar ubicaciones
         for ubicacion in ubicaciones_data:
             cursor.execute('''
-                INSERT OR IGNORE INTO valores_defecto (ubicacion) 
-                VALUES (?)
-            ''', ubicacion)
-        
-        for unidad in unidades_data:
-            cursor.execute('''
-                INSERT OR IGNORE INTO valores_defecto (unidad) 
-                VALUES (?)
-            ''', unidad)
+                INSERT OR IGNORE INTO valores_defecto (apartado, valor) 
+                VALUES (?, ?)
+            ''', ('ubicacion', ubicacion[0]))
         # Insertar categorías
 
 

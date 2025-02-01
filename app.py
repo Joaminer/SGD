@@ -71,7 +71,7 @@ def get_operations():
 
 @app.route('/')
 def historial():
-    return render_template('historial.html')
+    return render_template('historial.html', current_page="historial")
 
 @app.route('/api/search', methods=['GET'])
 def search():
@@ -313,16 +313,56 @@ def get_category_quantity():
 def get_types():
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT DISTINCT tipo FROM valores_defecto WHERE tipo IS NOT NULL')
+    cursor.execute('SELECT DISTINCT valor FROM valores_defecto WHERE apartado="tipo" AND valor IS NOT NULL')
     types = cursor.fetchall()
     connection.close()
     return jsonify([row[0] for row in types])
+
+
+@app.route('/api/values/<apartado>', methods=['GET', 'POST', 'DELETE', 'PUT'])
+def manage_values(apartado):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    if request.method == 'GET':
+        cursor.execute('SELECT valor FROM valores_defecto WHERE apartado = ?', (apartado,))
+        values = [row[0] for row in cursor.fetchall()]
+        connection.close()
+        return jsonify(values)
+
+    elif request.method == 'POST':
+        value = request.json.get('value')
+        if value:
+            cursor.execute('INSERT INTO valores_defecto (apartado, valor) VALUES (?, ?)', (apartado, value))
+            connection.commit()
+            connection.close()
+            return jsonify({'message': 'Valor agregado exitosamente'}), 201
+        return jsonify({'error': 'No se proporcionó el valor'}), 400
+
+    elif request.method == 'DELETE':
+        value = request.json.get('value')
+        if value:
+            cursor.execute('DELETE FROM valores_defecto WHERE apartado = ? AND valor = ?', (apartado, value))
+            connection.commit()
+            connection.close()
+            return jsonify({'message': 'Valor eliminado exitosamente'}), 200
+        return jsonify({'error': 'No se proporcionó el valor'}), 400
+
+    elif request.method == 'PUT':
+        old_value = request.json.get('old_value')
+        new_value = request.json.get('new_value')
+        if old_value and new_value:
+            cursor.execute('UPDATE valores_defecto SET valor = ? WHERE apartado = ? AND valor = ?', (new_value, apartado, old_value))
+            connection.commit()
+            connection.close()
+            return jsonify({'message': 'Valor actualizado exitosamente'}), 200
+        return jsonify({'error': 'Datos incompletos'}), 400
 
 @app.route('/api/units', methods=['GET'])
 def get_units():
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT DISTINCT unidad FROM valores_defecto WHERE unidad IS NOT NULL')
+    cursor.execute('SELECT DISTINCT valor FROM valores_defecto WHERE apartado="unidad" AND valor IS NOT NULL')
     units = cursor.fetchall()
     connection.close()
     return jsonify([row[0] for row in units])
@@ -332,7 +372,7 @@ def get_units():
 def get_locations():
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT DISTINCT ubicacion FROM valores_defecto WHERE ubicacion IS NOT NULL')
+    cursor.execute('SELECT DISTINCT valor FROM valores_defecto WHERE apartado="ubicacion_usuario" AND valor IS NOT NULL')
     locations = cursor.fetchall()
     connection.close()
     return jsonify([row[0] for row in locations])
@@ -341,7 +381,7 @@ def get_locations():
 def get_sections():
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT DISTINCT ubicacion_usuario FROM valores_defecto WHERE ubicacion_usuario IS NOT NULL')
+    cursor.execute('SELECT DISTINCT valor FROM valores_defecto WHERE apartado="ubicacion" AND valor IS NOT NULL')
     sections = cursor.fetchall()
     print(sections)
     print([row[0] for row in sections])
@@ -352,7 +392,7 @@ def get_sections():
 def get_states():
     connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute('SELECT DISTINCT estado FROM valores_defecto WHERE estado IS NOT NULL')
+    cursor.execute('SELECT DISTINCT valor FROM valores_defecto WHERE apartado="estado" AND valor IS NOT NULL')
     states = cursor.fetchall()
     connection.close()
     return jsonify([row[0] for row in states])
@@ -485,15 +525,15 @@ def user_search():
 
 @app.route('/busqueda')
 def busqueda():
-    return render_template('busqueda.html')
+    return render_template('busqueda.html',current_page="busqueda")
 
 @app.route('/analiticas')
 def analiticas():
-    return render_template('analiticas.html')
+    return render_template('analiticas.html',current_page="analiticas")
 
 @app.route('/configuracion')
 def configuracion():
-    return render_template('configuracion.html')
+    return render_template('configuracion.html',current_page="configuracion")   
 
 
 if __name__ == '__main__':

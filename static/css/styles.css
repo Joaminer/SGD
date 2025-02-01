@@ -210,9 +210,17 @@ header nav ul .single a{
 }
 header nav ul .single a:hover {
     text-decoration: none;
-    background-color: rgba(109, 88, 88, 0.281) !important;
+    background-color: rgba(109, 88, 88, 0.281) ;
     
 }
+.active-btn{
+    background-color: #3f494dd2!important;
+}
+/* header nav ul .single a:active {
+    text-decoration: none;
+    background-color: rgba(192, 28, 28, 0.425) !important;
+    
+} */
 
 /* header nav ul .single:last-child a:hover svg path {
     stroke: #C52E2E !important;
