@@ -12,13 +12,13 @@ from database import init_db
 
 
 # Inicializar la base de datos si no existe
-if not os.path.exists('tmp/BD.db'):
+if not os.path.exists('tmpp/BD.db'):
     
     print("Create DB")  
     init_db()
 
 def get_db_connection():
-    conn = sqlite3.connect('tmp/BD.db', check_same_thread=False)
+    conn = sqlite3.connect('tmpp/BD.db', check_same_thread=False)
     conn.execute('PRAGMA journal_mode=WAL')
     return conn
 

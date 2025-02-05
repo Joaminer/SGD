@@ -1,6 +1,6 @@
 import sqlite3
 
-DATABASE = 'tmp/BD.db'
+DATABASE = 'tmpp/BD.db'
 
  
 categories_data = [
