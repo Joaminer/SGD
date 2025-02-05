@@ -536,6 +536,10 @@ def configuracion():
     return render_template('configuracion.html',current_page="configuracion")   
 
 
+# if __name__ == '__main__':
+#     # app.run(host='0.0.0.0', port=5000, debug=True)
+#     app.run(port=5000,debug=True)
+
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=5000, debug=True)
-    app.run(port=5000,debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Usa el puerto que Vercel asigna
+    app.run(host="0.0.0.0", port=port, debug=True)
