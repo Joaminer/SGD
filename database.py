@@ -1,6 +1,6 @@
 import sqlite3
 
-DATABASE = 'materials.db'
+DATABASE = 'tmp/BD.db'
 
  
 categories_data = [
@@ -255,6 +255,7 @@ ubicaciones_usuarios_data = [
     ('Sector 6',)
 ]
 def init_db():
+    connection = None  
     try:
         connection = sqlite3.connect(DATABASE)
         cursor = connection.cursor()

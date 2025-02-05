@@ -1,2 +1,5 @@
 __pycache__
-materials.db
+BD.db
+
+BD.db-shm
+BD.db-wal
