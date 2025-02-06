@@ -1,10 +1,7 @@
 import sqlite3
 import sys
 
-if sys.platform.startswith('win'):
-    DATABASE = r'C:\Users\Irma\OneDrive\SGD\tmp\materials.db'
-else:
-    DATABASE = '/tmp/materials.db'
+DATABASE = r'C:\Users\Irma\OneDrive\SGD\tmp\materials.db'
 
  
 categories_data = [
@@ -335,7 +332,7 @@ def init_db():
         ''')
 
         # Insertar ubicaciones de usuario
-        
+        print("repetido")
         for ubicacion_usuario in ubicaciones_usuarios_data:
             cursor.execute('''
                 INSERT OR IGNORE INTO valores_defecto (apartado, valor) 
@@ -418,4 +415,4 @@ def init_db():
             connection.close()
 
 
-init_db()
+# init_db()

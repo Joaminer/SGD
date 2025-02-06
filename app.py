@@ -9,23 +9,16 @@ app = Flask(__name__)
 # Importar la función para inicializar la base de datos
 from database import init_db
 
-import sys
+DATABASE = r'C:\Users\Irma\OneDrive\SGD\tmp\materials.db'
 
-if sys.platform.startswith('win'):
-    DATABASE = r'C:\Users\Irma\OneDrive\SGD\tmp\materials.db'
-else:
-    DATABASE = '/tmp/materials.db'
-    
-db_dir = os.path.dirname(DATABASE)
-
-if not os.path.exists(db_dir):
-    os.makedirs(db_dir, exist_ok=True)
 # Inicializar la base de datos si no existe
-if not os.path.exists(DATABASE):
-    
-    print("Create DB")  
-    init_db()
 
+
+if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+    if not os.path.exists(DATABASE):
+        print("Create DB")  
+        init_db()
+        
 def get_db_connection():
     conn = sqlite3.connect(DATABASE, check_same_thread=False)
     conn.execute('PRAGMA journal_mode=WAL')
@@ -551,5 +544,9 @@ def configuracion():
 #     app.run(port=5000,debug=True)
 
 if __name__ == '__main__':
+    # if not os.path.exists(DATABASE):
+    
+    #     print("Create DB")  
+    #     init_db()
     port = int(os.environ.get("PORT", 5000))  # Usa el puerto que Vercel asigna
     app.run(host="0.0.0.0", port=port, debug=True)
