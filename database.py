@@ -1,6 +1,10 @@
 import sqlite3
+import sys
 
-DATABASE = 'tmpp/BD.db'
+if sys.platform.startswith('win'):
+    DATABASE = r'C:\Users\Irma\OneDrive\SGD\tmp\materials.db'
+else:
+    DATABASE = '/tmp/materials.db'
 
  
 categories_data = [
@@ -410,7 +414,7 @@ def init_db():
     except sqlite3.Error as e:
         print(f"Error al inicializar la base de datos: {e}")
     finally:
-        if connection:
+        if connection is not None:
             connection.close()
 
 

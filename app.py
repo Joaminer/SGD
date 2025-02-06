@@ -9,16 +9,25 @@ app = Flask(__name__)
 # Importar la función para inicializar la base de datos
 from database import init_db
 
+import sys
 
+if sys.platform.startswith('win'):
+    DATABASE = r'C:\Users\Irma\OneDrive\SGD\tmp\materials.db'
+else:
+    DATABASE = '/tmp/materials.db'
+    
+db_dir = os.path.dirname(DATABASE)
 
+if not os.path.exists(db_dir):
+    os.makedirs(db_dir, exist_ok=True)
 # Inicializar la base de datos si no existe
-if not os.path.exists('tmpp/BD.db'):
+if not os.path.exists(DATABASE):
     
     print("Create DB")  
     init_db()
 
 def get_db_connection():
-    conn = sqlite3.connect('tmpp/BD.db', check_same_thread=False)
+    conn = sqlite3.connect(DATABASE, check_same_thread=False)
     conn.execute('PRAGMA journal_mode=WAL')
     return conn
 
